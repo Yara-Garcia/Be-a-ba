@@ -33,6 +33,10 @@ fetch('http://localhost:3000/profiles', {
         console.error('Erro:', error);
     });
 
+document.getElementById('btn-cancelar').addEventListener('click', function () {
+    window.location.href = '../html/gestaoUsuarios.html';
+});
+
 document.getElementById('form-container').addEventListener('submit', function (event) {
     event.preventDefault();  // Impede que o formulário seja submetido de maneira convencional
 
