@@ -5,11 +5,10 @@ const cors = require('cors');
 const { createUser, updateUser, deleteUser, showUsers, getUserInfos } = require('./controllers/usuariosController');
 const login = require('./controllers/login');
 const authenticateUser = require('./middlewares/authetication');
-const { createModule, updateModule, deleteModule, showModules } = require('./controllers/modulosController');
+const { createModule, updateModule, deleteModule, showModules, getModuleInfos } = require('./controllers/modulosController');
 const { createProfile, updateProfile, deleteProfile, showProfiles } = require('./controllers/perfisControllers');
 const { createTransaction, updateTransaction, deleteTransaction } = require('./controllers/transacoesController');
 const { createFunction, updateFunction, deleteFunction } = require('./controllers/funcoesController');
-
 
 const app = express();
 const PORT = 3000;
@@ -26,31 +25,6 @@ app.use(bodyParser.json());
 
 // Middleware para servir arquivos estáticos.
 app.use(express.static(path.join(__dirname, 'public')));
-
-app.get('/login', (req, res) => {
-    res.sendFile(path.join(__dirname, 'views', 'html/login.html'));
-});
-
-// Rota GET para servir o arquivo 'criarUsuario.html'
-app.get('/user', (req, res) => {
-    res.sendFile(path.join(__dirname, 'views', 'html/criarUsuario.html'));
-});
-
-app.get('/editUser/:id_usuario', (req, res) => {
-    res.sendFile(path.join(__dirname, 'views', 'html/editarUsuario.html'));
-
-});
-
-// Rota GET para servir os módulos
-app.get('/modules', (req, res) => {
-    res.sendFile(path.join(__dirname, 'views', 'html/gestaoModulos.html'));
-});
-
-
-// Rota raiz para direcionar para a página de registro
-app.get('/', (req, res) => {
-    res.redirect('/user');
-});
 
 // Middleware para tratamento de erros
 app.use((err, req, res, next) => {
@@ -77,6 +51,7 @@ app.get('/profiles', showProfiles);
 app.post('/module', createModule);
 app.put('/module/:id_modulo', updateModule);
 app.delete('/module/:id_modulo', deleteModule);
+app.get('/module/:id_modulo', getModuleInfos);
 app.get('/modules', showModules);
 app.post('/transaction', createTransaction);
 app.put('/transaction/:id_transacao', updateTransaction);

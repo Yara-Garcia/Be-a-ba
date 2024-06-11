@@ -87,9 +87,27 @@ const deleteModule = async (req, res) => {
     }
 }
 
+const getModuleInfos = async (req, res) => {
+
+    const { id_modulo } = req.params;
+    try {
+        const module = await Modulo.findOne({ where: { id_modulo: id_modulo } });
+
+        if (module === null) {
+            return res.status(400).json({ success: false, message: 'Módulo não encontrado para o ID informado!' });
+        }
+
+        return res.status(200).json({ success: true, module });
+    } catch (erro) {
+        console.log(erro.message)
+        return res.status(500).json({ success: false, mensagem: 'Erro interno do servidor.' });
+    }
+};
+
 const showModules = async (req, res) => {
     try {
         const modules = await Modulo.findAll();
+        console.log(modules)
         return res.status(200).json({ success: true, modules });
     } catch (erro) {
         console.log(erro.message)
@@ -101,5 +119,6 @@ module.exports = {
     createModule,
     updateModule,
     deleteModule,
+    getModuleInfos,
     showModules
 }

@@ -118,7 +118,6 @@ const getUserInfos = async (req, res) => {
     }
 };
 
-
 const showUsers = async (req, res) => {
     try {
         const users = await Usuario.findAll();

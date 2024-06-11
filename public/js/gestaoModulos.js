@@ -1,4 +1,4 @@
-//import { confirmarExclusaoUsuario } from './deletarUsuario.js';
+import { confirmarExclusaoModulo } from "./deletarModulo.js";
 
 fetch('http://localhost:3000/modules', {
     method: 'GET'
@@ -12,115 +12,94 @@ fetch('http://localhost:3000/modules', {
     .then(data => {
         if (data.success) {
             const modules = data.modules;
-            console.log(modules)
 
-            fetch('http://localhost:3000/modules', {
-                method: 'GET'
-            })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Falha na requisição: ' + response.statusText);
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    if (data.success) {
-                        const modulesMap = new Map(); // Mapa para armazenar modulos por ID
+            modules.sort((a, b) => a.nome_modulo.localeCompare(b.nome_modulo));
 
-                        modules.forEach(module => modulesMap.set(module.id_modulo, module.nome_modulo));
+            const tableBody = document.querySelector('table.table-hover tbody'); // Seleciona o corpo da tabela
 
-                        modules.sort((a, b) => a.nome_modulo.localeCompare(b.nome_modulo));
+            tableBody.innerHTML = ''; // Limpa o conteúdo da tabela
 
-                        const tableBody = document.querySelector('table.table-hover tbody'); // Seleciona o corpo da tabela
+            modules.forEach(module => {
+                const tableRow = document.createElement('tr');
 
-                        tableBody.innerHTML = ''; // Limpa o conteúdo da tabela
+                const thNome = document.createElement('th');
+                thNome.scope = "row";
+                thNome.className = "col-name";
+                thNome.id = "row";
+                thNome.textContent = module.nome_modulo;
 
-                        modules.forEach(module => {
-                            const tableRow = document.createElement('tr');
+                thNome.setAttribute('module-id', module.id_modulo);
 
-                            const thNome = document.createElement('th');
-                            thNome.scope = "row";
-                            thNome.className = "col-name";
-                            thNome.id = "row";
-                            thNome.textContent = module.nome_modulo;
+                const descricao = module.descricao;
+                const tdDescricao = document.createElement('td');
+                tdDescricao.className = "col-description";
+                tdDescricao.textContent = descricao ? descricao : '';
 
-                            thNome.setAttribute('module-id', module.id_modulo);
+                const tdAcoes = document.createElement('td');
+                tdAcoes.class = "col-actions";
 
-                            const descricao = modulesMap.get(module.descricao);
-                            const tdDescricao = document.createElement('td');
-                            tdDescricao.className = "col-description";
-                            tdDescricao.textContent = descricao ? descricao : '';
+                const editarIcon = criarSvgIcone('editar', `editarModulo.html?id_modulo=${module.id_modulo}`);
+                const deletarIcon = criarSvgIcone('deletar', 'gestaoModulos.html');
+                deletarIcon.setAttribute('module-id', module.id_modulo); // Armazena o id como um atributo do ícone de exclusão
 
-                            const tdAcoes = document.createElement('td');
-                            tdAcoes.class = "col-actions";
+                deletarIcon.addEventListener('click', function (event) {
+                    event.preventDefault();
+                    const modal = new bootstrap.Modal(document.getElementById('confirmarExclusaoModal'));
+                    modal.show();
 
-                            const editarIcon = criarSvgIcone('editar', `editarModulos.html?id_modulo=${module.id_modulo}`);
-                            const deletarIcon = criarSvgIcone('deletar', 'gestaoModulos.html');
-                            deletarIcon.setAttribute('module-id', module.id_modulo); // Armazena o id como um atributo do ícone de exclusão
-
-                            /* deletarIcon.addEventListener('click', function (event) {
-                                 event.preventDefault();
-                                 const modal = new bootstrap.Modal(document.getElementById('confirmarExclusaoModal'));
-                                  modal.show();
- 
-                                 const moduleId = this.getAttribute('module-id');
-                                 confirmarExclusaoModulo(moduleId);
-                             });*/
-
-                            editarIcon.setAttribute('data-bs-toggle', 'tooltip');
-                            editarIcon.setAttribute('data-placement', 'top');
-                            editarIcon.setAttribute('title', 'Editar');
-                            deletarIcon.setAttribute('data-bs-toggle', 'tooltip');
-                            deletarIcon.setAttribute('data-placement', 'top');
-                            deletarIcon.setAttribute('title', 'Excluir');
-
-                            // Adiciona os ícones de edição e exclusão à célula de ações
-                            tdAcoes.appendChild(editarIcon);
-                            tdAcoes.appendChild(document.createTextNode(' ')); // Adiciona um espaço entre os ícones
-                            tdAcoes.appendChild(deletarIcon);
-
-                            // Adiciona a linha com o nome do usuário e as ações à tabela
-                            tableRow.appendChild(thNome);
-                            tableRow.appendChild(tdDescricao);
-                            tableRow.appendChild(tdAcoes);
-
-                            // Adiciona a linha completa à tabela
-                            tableBody.appendChild(tableRow);
-                        });
-
-                        // Barra de pesquisa
-                        const searchInput = document.getElementById('search-focus');
-                        const tabelaModulos = document.querySelector('.main-content table');
-
-                        searchInput.addEventListener('input', function () {
-                            const filtro = removerAcentos(this.value.toLowerCase()); // Normaliza e converte para minúsculas
-                            filtrarTabela(filtro);
-                        });
-
-                        function removerAcentos(texto) {
-                            return texto.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-                        }
-
-                        function filtrarTabela(filtro) {
-                            const linhas = tabelaModulos.querySelectorAll('tbody tr');
-                            linhas.forEach(linha => {
-                                const nomeModulo = removerAcentos(linha.querySelector('.col-name').textContent.toLowerCase()); // Normaliza e converte para minúsculas
-                                const descricao = removerAcentos(linha.querySelector('.col-description').textContent.toLowerCase()); // Normaliza e converte para minúsculas
-                                if (nomeModulo.includes(filtro) || descricao.includes(filtro)) {
-                                    linha.style.display = 'table-row';
-                                } else {
-                                    linha.style.display = 'none';
-                                }
-                            });
-                        }
-
-                    } else {
-                        console.error('Erro ao buscar módulos:', data.message);
-                    }
-                })
-                .catch(error => {
-                    console.error('Erro:', error);
+                    const moduleId = this.getAttribute('module-id');
+                    confirmarExclusaoModulo(moduleId);
                 });
+
+                editarIcon.setAttribute('data-bs-toggle', 'tooltip');
+                editarIcon.setAttribute('data-placement', 'top');
+                editarIcon.setAttribute('title', 'Editar');
+                deletarIcon.setAttribute('data-bs-toggle', 'tooltip');
+                deletarIcon.setAttribute('data-placement', 'top');
+                deletarIcon.setAttribute('title', 'Excluir');
+
+                // Adiciona os ícones de edição e exclusão à célula de ações
+                tdAcoes.appendChild(editarIcon);
+                tdAcoes.appendChild(document.createTextNode(' ')); // Adiciona um espaço entre os ícones
+                tdAcoes.appendChild(deletarIcon);
+
+                // Adiciona a linha com o nome do usuário e as ações à tabela
+                tableRow.appendChild(thNome);
+                tableRow.appendChild(tdDescricao);
+                tableRow.appendChild(tdAcoes);
+
+                // Adiciona a linha completa à tabela
+                tableBody.appendChild(tableRow);
+            });
+
+            // Barra de pesquisa
+            const searchInput = document.getElementById('search-focus');
+            const tabelaModulos = document.querySelector('.main-content table');
+
+            searchInput.addEventListener('input', function () {
+                const filtro = removerAcentos(this.value.toLowerCase()); // Normaliza e converte para minúsculas
+                filtrarTabela(filtro);
+            });
+
+            function removerAcentos(texto) {
+                return texto.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+            }
+
+            function filtrarTabela(filtro) {
+                const linhas = tabelaModulos.querySelectorAll('tbody tr');
+                linhas.forEach(linha => {
+                    const nomeModulo = removerAcentos(linha.querySelector('.col-name').textContent.toLowerCase()); // Normaliza e converte para minúsculas
+                    const descricao = removerAcentos(linha.querySelector('.col-description').textContent.toLowerCase()); // Normaliza e converte para minúsculas
+                    if (nomeModulo.includes(filtro) || descricao.includes(filtro)) {
+                        linha.style.display = 'table-row';
+                    } else {
+                        linha.style.display = 'none';
+                    }
+                });
+            }
+
+        } else {
+            console.error('Erro ao buscar módulos:', data.message);
         }
     })
     .catch(error => {
