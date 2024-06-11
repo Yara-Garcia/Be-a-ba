@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="pt">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="../../css/styles.css" media="screen">
+
+    <title>Login</title>
+</head>
+
+<body>
+    <div class="login-container">
+        <img src="../../imagens/logoLoja.png">
+
+        <div>
+            <h2 id="titulo">Bem-vindo de volta!</h2>
+            <br>
+        </div>
+
+        <form id="login-container">
+            <div class="mb-3">
+                <label for="usuario" class="form-label"></label>
+                <input type="text" class="form-control" name="usuario" id="usuario" placeholder="Usuário" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="senha" class="form-label"></label>
+                <input type="password" class="form-control" id="senha" name="senha" placeholder="Senha" required>
+                <span class="icon"><i class="fas fa-eye" id="mostrar-senha"></i></span>
+            </div>
+
+            <div class="mb-3">
+                <label for="perdeu-a-senha" class="perdeu-a-senha"><a href="../html/redefinirSenha.html">Perdeu a
+                        senha?</a></label>
+            </div>
+
+            <button class="botao" type="submit" onsubmit="">Entrar</button>
+        </form>
+
+    </div>
+    <script src="../../js/login.js"></script>
+    </script>
+</body>
+
+</html>
+
+</html>

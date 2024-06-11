@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="pt">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestão de Usuários</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="../../css/header.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="../../css/menu.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="../../css/styles-mainPages.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="../../css/search.css" media="screen">
+</head>
+
+<body class="active-page">
+    <div class="container-fluid">
+        <div class="header" id="header">
+            <div class="logo-header">
+                <img src="../../imagens/logoLoja.png" alt="Logo da Loja">
+            </div>
+        </div>
+        <header>
+            <nav id="sidebarMenu" class="collapse d-lg-block sidebar collapse bg-white">
+                <div class="position-sticky">
+                    <ul class="nav flex-column">
+                        <li class="nav-item-gestao-usuarios">
+                            <a class="nav-link mt-2" href="../html/gestaoUsuarios.html"> <!-- mt é pra margin-top -->
+                                Gestão de Usuários
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="../html/gestaoPerfis.html">
+                                Gestão de Perfis
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="../html/gestaoModulos.html">
+                                Gestão de Módulos
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="../html/gestaoTransaçoes.html">
+                                Gestão de Transações
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="../html/gestaoFuncoes.html">
+                                Gestão de Funções
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/minhaConta">
+                                Dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle"
+                                id="dropdownUser1" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <img src="../../imagens/foto-perfil.png" class="rounded-circle" height="40"
+                                    alt="Avatar" />
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-light text-small shadow">
+                                <li><a class="dropdown-item" href="3dadosCadastrais.html">Minha Conta</a></li>
+                                <li><a class="dropdown-item" href="#">Sair</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+    </div>
+    </nav>
+
+    <nav id="main-navbar" class="navbar navbar-expand-lg navbar-light fixed-top">
+        <div class="container-fluid">
+            <button data-mdb-button-init class="navbar-toggler" type="button" data-mdb-collapse-init
+                data-mdb-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <i class="fas fa-bars"></i> <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
+    </nav>
+    </header>
+
+    <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+        <div class="main-content">
+            <h2 id="titulo">Gestão de Usuários</h2>
+            <br>
+            <div class="input-group-search">
+                <div class="group-search">
+                    <div class="form-outline" data-mdb-input-init>
+                        <input id="search-focus" type="search" id="form1" class="form-control-search"
+                            placeholder="Pesquisar..." />
+                        <label class="form-label" for="form1"></label>
+                    </div>
+                    <button type="button" class="btn btn-primary" data-mdb-ripple-init>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                            class="bi bi-search" viewBox="0 0 16 16">
+                            <path
+                                d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0" />
+                        </svg>
+                    </button>
+                </div>
+
+                <button type="button" class="btn btn-success"><a href="../html/criarUsuario.html">Criar
+                        Usuário</a></button>
+
+            </div><br>
+
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th scope="col" class="col-name">Nome</th>
+                        <th scope="col" class="col-profile">Perfil Associado</th>
+                        <th scope="col" class="col-actions">Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <div class="modal fade" id="confirmarExclusaoModal" tabindex="-1"
+                        aria-labelledby="confirmarExclusaoModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="confirmarExclusaoModalLabel">Tem certeza que deseja
+                                        excluir este usuário?</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <p>Ao excluir não será possível recuperar!</p>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary"
+                                        data-bs-dismiss="modal">Cancelar</button>
+                                    <button type="button" class="btn btn-primary"
+                                        id="confirmarExclusaoBtn">Excluir</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </tbody>
+            </table>
+        </div>
+    </main>
+    </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+        integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+        integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.6/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/js/bootstrap.min.js"></script>
+    <script src="../../js/menuScript.js"></script>
+    <script type="module" src="../../js/gestaoUsuarios.js"></script>
+    <script type="module" src="../../js/deletarUsuario.js"></script>
+
+</body>
+
+</html>

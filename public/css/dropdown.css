@@ -1,0 +1,64 @@
+.campo mb-3 {
+    margin-top: -20px;
+}
+
+.dropdown {
+    position: relative;
+    display: inline-block;
+    width: 80%;
+    max-width: 100%;
+    margin-bottom: 10px;
+    /* Define a margem inferior para separar os inputs */
+    padding: 8px;
+    /* Adiciona um preenchimento interno aos inputs */
+    box-sizing: border-box;
+    /* Garante que o preenchimento e a borda não aumentem o tamanho total do input */
+}
+
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    width: 100%;
+    max-height: 200px;
+    overflow-y: auto;
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+}
+
+.dropdown-content label {
+    display: block;
+    padding: 8px;
+    cursor: pointer;
+}
+
+.dropdown-content input[type="checkbox"] {
+    margin-right: 10px;
+}
+
+.dropdown-search {
+    padding: 8px;
+    width: calc(100% - 16px);
+    box-sizing: border-box;
+}
+
+.dropdown-btn {
+    width: 100%;
+    padding: 8px;
+    box-sizing: border-box;
+    cursor: pointer;
+    background-color: white;
+    border: 1px solid #cccccc;
+    text-align: left;
+    border-radius: 4px;
+}
+
+.dropdown-btn:after {
+    content: '\25BC';
+    float: right;
+}
+
+.dropdown.show .dropdown-content {
+    display: block;
+}

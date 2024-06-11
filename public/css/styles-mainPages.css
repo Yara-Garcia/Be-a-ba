@@ -1,0 +1,149 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+}
+
+.active-page .nav-item-gestao-usuarios .nav-link,
+.active-page .nav-item-gestao-perfis .nav-link,
+.active-page .nav-item-gestao-modulos .nav-link,
+.active-page .nav-item-gestao-transacoes .nav-link,
+.active-page .nav-item-gestao-funcoes .nav-link {
+    background-color: #0F6CBF;
+    color: #ffffff;
+}
+
+.container-fluid {
+    padding: 20px;
+    width: 100%;
+}
+
+.main-content {
+    background-color: #ffffff;
+    border: none;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    /* Alinha o conteúdo ao início verticalmente */
+    margin: 0 auto;
+    /* Centraliza horizontalmente */
+}
+
+
+.table {
+    max-width: 100%;
+    table-layout: fixed;
+    /* Ensure fixed layout */
+}
+
+.table th,
+.table td {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.table th.col-name,
+.table td.col-name {
+    width: auto;
+}
+
+
+#row {
+    font-weight: lighter;
+}
+
+/* Estilo para os inputs */
+.form-control,
+.form-select {
+    width: 50%;
+    margin-bottom: 10px;
+    /* Define a margem inferior para separar os inputs */
+    padding: 8px;
+    /* Adiciona um preenchimento interno aos inputs */
+    box-sizing: border-box;
+    /* Garante que o preenchimento e a borda não aumentem o tamanho total do input */
+}
+
+/* Estilo para as labels */
+.form-label {
+    margin-bottom: 5px;
+    /* Define a margem inferior para separar as labels dos inputs */
+}
+
+/* Estilo para os botões */
+.btn {
+    margin-right: 10px;
+    /* Define a margem direita para separar os botões */
+}
+
+.btn-success a {
+    text-decoration: none;
+    color: white;
+}
+
+a svg {
+    color: black;
+}
+
+#titulo {
+    font-size: 28px;
+    margin-top: 20px;
+    margin-bottom: 5px;
+}
+
+@media (min-width: 1024px) {
+    .main-content {
+        padding: 50px;
+    }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+    .main-content {
+        background-color: #ffffff;
+        border: none;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        /* Alinha o conteúdo ao início verticalmente */
+        margin: 0 auto;
+        /* Centraliza horizontalmente */
+    }
+
+    .table {
+        max-width: 100%;
+        table-layout: fixed;
+        /* Ensure fixed layout */
+    }
+
+    #titulo {
+        font-size: 25px;
+    }
+
+    .form-select,
+    .form-control {
+        width: 80%;
+        max-width: 100%;
+    }
+}
+
+@media (max-width: 767px) {
+    .main-content {
+        padding: 30px;
+    }
+
+    #titulo {
+        font-size: 22px;
+        margin-top: 20px;
+        margin-bottom: 15px;
+    }
+
+    .form-select,
+    .form-control {
+        width: 90%;
+    }
+
+}

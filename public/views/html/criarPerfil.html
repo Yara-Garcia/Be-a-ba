@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="pt">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="../../css/header.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="../../css/menu.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="../../css/styles-forms.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="../../css/dropdown.css" media="screen">
+    <title>Criar Perfil</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <div class="container-fluid">
+        <div class="header" id="header">
+            <div class="logo-header">
+                <img src="../../imagens/logoLoja.png" alt="Logo da Loja">
+            </div>
+        </div>
+        <header>
+            <nav id="sidebarMenu" class="collapse d-lg-block sidebar collapse bg-white">
+                <div class="position-sticky">
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link mt-2" href="../html/gestaoUsuarios.html"> <!-- mt é pra margin-top -->
+                                Gestão de Usuários
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="../html/gestaoPerfis.html">
+                                Gestão de Perfis
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="../html/gestaoModulos.html">
+                                Gestão de Módulos
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="../html/gestaoTransaçoes.html">
+                                Gestão de Transações
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="../html/gestaoFuncoes.html">
+                                Gestão de Funções
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/minhaConta">
+                                Dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle"
+                                id="dropdownUser1" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <img src="../../imagens/foto-perfil.png" class="rounded-circle" height="40"
+                                    alt="Avatar" />
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-light text-small shadow">
+                                <li><a class="dropdown-item" href="3dadosCadastrais.html">Minha Conta</a></li>
+                                <li><a class="dropdown-item" href="#">Sair</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+    </div>
+    </nav>
+
+    <nav id="main-navbar" class="navbar navbar-expand-lg navbar-light fixed-top">
+        <div class="container-fluid">
+            <button data-mdb-button-init class="navbar-toggler" type="button" data-mdb-collapse-init
+                data-mdb-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <i class="fas fa-bars"></i> <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
+    </nav>
+    </header>
+
+    <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+        <div class="main-content">
+            <h2 id="titulo" class="titulo-page">Criar perfil</h2>
+            <br>
+            <form id="form-container">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="campo mb-3">
+                            <label class="perfil-label" for="nome">Nome do Perfil:</label>
+                            <input type="text" name="nome" id="nome" class="form-control" required>
+                        </div>
+
+                        <div class="campo mb-3">
+                            <label class="perfil-label" for="descricao">Descrição:</label>
+                            <textarea rows="6" class="form-control" id="descricao" name="descricao"
+                                placeholder="Opcional"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="campo mb-3">
+                            <div class="dropdown" id="dropdownModules">
+                                <label class="perfil-label" for="associar-modulos">Associar a Módulos:</label>
+                                <button class="dropdown-btn">Selecione as opções</button>
+                                <div class="dropdown-content">
+                                    <input type="text" class="dropdown-search" placeholder="Buscar...">
+                                    <label><input class="checkbox" type="checkbox" value="modulo1"> Módulo 1</label>
+                                    <label><input class="checkbox" type="checkbox" value="modulo2"> Módulo 2</label>
+                                    <label><input class="checkbox" type="checkbox" value="modulo3"> Módulo 3</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="campo mb-3" id="transactionsDropdown" style="display:none;">
+                            <div class="dropdown">
+                                <label class="perfil-label" for="associar-transacoes">Associar a Transações:</label>
+                                <button class="dropdown-btn">Selecione as opções</button>
+                                <div class="dropdown-content">
+
+                                    <!-- As transações devem aparecer dinamicamente aqui conforme os módulos selecionados -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="modal fade" id="functionsModal" tabindex="-1" aria-labelledby="functionsModalLabel"
+                            aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="functionsModalLabel">Selecione Funções</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <label class="perfil-label" for="selecionar-funcoes">Selecionar funções
+                                            permitidas:</label>
+
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary"
+                                            data-dismiss="modal">Fechar</button>
+                                        <button type="button" class="btn btn-primary">Salvar</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                    <button class="btn btn-secondary" type="button">Cancelar</button>
+                    <button class="btn btn-success" type="submit">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </main>
+    </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+        integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+        integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+        crossorigin="anonymous"></script>
+    <script src="../../js/menuScript.js"></script>
+    <script src="../../js/criarPerfil.js"></script>
+
+</body>
+
+</html>

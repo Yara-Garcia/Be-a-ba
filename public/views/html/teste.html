@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seleção Dinâmica com Bootstrap</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .dropdown-menu {
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .dropdown-item input {
+            margin-right: 10px;
+        }
+
+        .dropdown-search {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 8px;
+            border: 1px solid #ddd;
+            margin-bottom: 8px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container mt-4">
+        <!-- Dropdown para selecionar módulos -->
+        <div class="dropdown mb-3">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownModules" data-toggle="dropdown"
+                aria-haspopup="true" aria-expanded="false">
+                Selecione Módulos
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownModules">
+                <input type="text" class="dropdown-search" placeholder="Buscar...">
+                <div class="dropdown-divider"></div>
+                <label class="dropdown-item"><input type="checkbox" value="modulo1"> Módulo 1</label>
+                <label class="dropdown-item"><input type="checkbox" value="modulo2"> Módulo 2</label>
+                <label class="dropdown-item"><input type="checkbox" value="modulo3"> Módulo 3</label>
+                <!-- Adicione mais módulos conforme necessário -->
+            </div>
+        </div>
+
+        <!-- Dropdown para selecionar transações -->
+        <div class="dropdown mb-3" id="transactionsDropdown" style="display: none;">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownTransactions"
+                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Selecione Transações
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownTransactions">
+                <input type="text" class="dropdown-search" placeholder="Buscar...">
+                <div class="dropdown-divider"></div>
+                <!-- As transações serão inseridas dinamicamente aqui -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para funções -->
+    <div class="modal fade" id="functionsModal" tabindex="-1" aria-labelledby="functionsModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="functionsModalLabel">Selecione Funções</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <!-- As funções serão inseridas dinamicamente aqui -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                    <button type="button" class="btn btn-primary">Salvar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+        // Dados de exemplo
+        const modules = {
+            modulo1: ['transacao1', 'transacao2'],
+            modulo2: ['transacao3', 'transacao4'],
+            modulo3: ['transacao5', 'transacao6']
+        };
+
+        const transactions = {
+            transacao1: ['funcao1', 'funcao2'],
+            transacao2: ['funcao3', 'funcao4'],
+            transacao3: ['funcao5', 'funcao6'],
+            transacao4: ['funcao7', 'funcao8'],
+            transacao5: ['funcao9', 'funcao10'],
+            transacao6: ['funcao11', 'funcao12']
+        };
+
+        // Filtragem das opções de módulos
+        document.querySelector('.dropdown-search').addEventListener('keyup', function () {
+            var filter = this.value.toLowerCase();
+            var labels = this.parentElement.querySelectorAll('.dropdown-item');
+            labels.forEach(function (label) {
+                var text = label.textContent.toLowerCase();
+                if (text.includes(filter)) {
+                    label.style.display = '';
+                } else {
+                    label.style.display = 'none';
+                }
+            });
+        });
+
+        // Atualiza as transações com base nos módulos selecionados
+        document.querySelectorAll('#dropdownModules .dropdown-item input').forEach(input => {
+            input.addEventListener('change', function () {
+                const selectedModules = Array.from(document.querySelectorAll('#dropdownModules .dropdown-item input:checked')).map(el => el.value);
+                const transactionDropdown = document.querySelector('#transactionsDropdown .dropdown-menu');
+                transactionDropdown.innerHTML = `
+                    <input type="text" class="dropdown-search" placeholder="Buscar...">
+                    <div class="dropdown-divider"></div>
+                `;
+                let transactionItems = new Set();
+                selectedModules.forEach(module => {
+                    modules[module].forEach(transaction => {
+                        transactionItems.add(transaction);
+                    });
+                });
+            });
+            transactionItems.forEach(transaction => {
+                const label = document.createElement('label');
+                label.className = 'dropdown-item';
+                label.innerHTML = <input type="checkbox" value="${transaction}">{transaction}</input>;
+                label.querySelector('input').addEventListener('change', function () {
+                    if (this.checked) {
+                        openFunctionsModal(transaction);
+                    }
+
+                    transactionDropdown.appendChild(label);
+                });
+            })
+        })
+        document.getElementById('transactionsDropdown').style.display = selectedModules.length ? 'block' : 'none';
+
+        function openFunctionsModal(transaction) {
+            const modalBody = document.querySelector('#functionsModal .modal-body');
+            modalBody.innerHTML = '';
+            transactions[transaction].forEach(func => {
+                const label = document.createElement('label');
+                label.className = 'dropdown-item';
+                label.innerHTML = <input type="checkbox" value="${func}">{func}</input>;
+                modalBody.appendChild(label);
+            });
+            $('#functionsModal').modal('show');
+        }
+
+        // Filtragem das opções de transações dentro do dropdown de transações
+        document.addEventListener('input', function (event) {
+            if (event.target.classList.contains('dropdown-search')) {
+                const filter = event.target.value.toLowerCase();
+                const labels = event.target.parentElement.querySelectorAll('.dropdown-item');
+                labels.forEach(function (label) {
+                    const text = label.textContent.toLowerCase();
+                    if (text.includes(filter)) {
+                        label.style.display = '';
+                    } else {
+                        label.style.display = 'none';
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+
+</html>
