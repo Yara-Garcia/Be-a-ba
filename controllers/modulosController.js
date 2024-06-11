@@ -87,8 +87,19 @@ const deleteModule = async (req, res) => {
     }
 }
 
+const showModules = async (req, res) => {
+    try {
+        const modules = await Modulo.findAll();
+        return res.status(200).json({ success: true, modules });
+    } catch (erro) {
+        console.log(erro.message)
+        return res.status(500).json({ success: false, mensagem: 'Erro interno do servidor.' });
+    }
+};
+
 module.exports = {
     createModule,
     updateModule,
-    deleteModule
+    deleteModule,
+    showModules
 }

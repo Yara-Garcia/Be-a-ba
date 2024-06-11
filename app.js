@@ -5,7 +5,7 @@ const cors = require('cors');
 const { createUser, updateUser, deleteUser, showUsers, getUserInfos } = require('./controllers/usuariosController');
 const login = require('./controllers/login');
 const authenticateUser = require('./middlewares/authetication');
-const { createModule, updateModule, deleteModule } = require('./controllers/modulosController');
+const { createModule, updateModule, deleteModule, showModules } = require('./controllers/modulosController');
 const { createProfile, updateProfile, deleteProfile, showProfiles } = require('./controllers/perfisControllers');
 const { createTransaction, updateTransaction, deleteTransaction } = require('./controllers/transacoesController');
 const { createFunction, updateFunction, deleteFunction } = require('./controllers/funcoesController');
@@ -41,6 +41,12 @@ app.get('/editUser/:id_usuario', (req, res) => {
 
 });
 
+// Rota GET para servir os módulos
+app.get('/modules', (req, res) => {
+    res.sendFile(path.join(__dirname, 'views', 'html/gestaoModulos.html'));
+});
+
+
 // Rota raiz para direcionar para a página de registro
 app.get('/', (req, res) => {
     res.redirect('/user');
@@ -71,6 +77,7 @@ app.get('/profiles', showProfiles);
 app.post('/module', createModule);
 app.put('/module/:id_modulo', updateModule);
 app.delete('/module/:id_modulo', deleteModule);
+app.get('/modules', showModules);
 app.post('/transaction', createTransaction);
 app.put('/transaction/:id_transacao', updateTransaction);
 app.delete('/transaction/:id_transacao', deleteTransaction);
