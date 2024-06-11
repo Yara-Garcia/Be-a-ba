@@ -5,7 +5,7 @@ export function confirmarExclusaoModulo(moduleId) {
         })
             .then(response => {
                 if (!response.ok) {
-                    throw new Error('Falha na requisição: ' + response.statusText);
+                    const error = response.statusText;
                 }
                 return response.json();
             })
