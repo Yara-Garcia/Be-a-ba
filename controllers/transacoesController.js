@@ -1,4 +1,6 @@
+const Modulo = require("../models/modulos");
 const Transacao = require("../models/transacoes");
+const ModuloTransacao = require("../models/moduloTransacao");
 const { Op } = require('sequelize');
 
 
@@ -84,21 +86,25 @@ const deleteTransaction = async (req, res) => {
 }
 
 const getTransactionInfos = async (req, res) => {
-
     const { id_transacao } = req.params;
-    try {
-        const transaction = await Transacao.findOne({ where: { id_transacao: id_transacao } });
 
-        if (transaction === null) {
+    try {
+        // Buscar informações da transação
+        const transaction = await Transacao.findOne({
+            where: { id_transacao },
+            include: [Modulo] // Incluir os módulos associados
+        });
+
+        if (!transaction) {
             return res.status(400).json({ success: false, message: 'Transação não encontrada para o ID informado!' });
         }
-
         return res.status(200).json({ success: true, transaction });
-    } catch (erro) {
-        console.log(erro.message)
-        return res.status(500).json({ success: false, mensagem: 'Erro interno do servidor.' });
+    } catch (error) {
+        console.error(error.message);
+        return res.status(500).json({ success: false, message: 'Erro interno do servidor.' });
     }
-};
+}
+
 
 const showTransactions = async (req, res) => {
     try {
