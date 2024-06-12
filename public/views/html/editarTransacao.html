@@ -88,23 +88,20 @@
                 <div class="mb-3 campo">
                     <label for="selecionar-modulo" class="form-label">Módulo:</label>
                     <select id="selecionar-modulo" class="form-select" required>
-                        <option value="" disabled selected>Selecione</option>
-                        <option value="Compras">Compras</option>
-                        <option value="Estoque">Estoque</option>
-                        <option value="Financeiro">Financeiro</option>
+                        <option value="" disabled>Selecione</option>
                     </select>
                 </div>
                 <div class="mb-3 campo-nome-transacao">
-                    <label for="nome" class="form-label">Nome da Transação:</label>
-                    <input type="text" class="form-control" id="nome" name="nome" required>
+                    <label for="nome-modulo" class="form-label">Nome da Transação:</label>
+                    <input type="text" class="form-control" id="nome-modulo" name="nome-modulo" required>
                 </div>
                 <div class="mb-3 campo">
                     <label for="descricao" class="form-label">Descrição:</label>
                     <textarea class="form-control" rows="6" id="descricao" name="descricao"
                         placeholder="Opcional"></textarea>
                 </div>
-                <button class="btn btn-secondary" type="button">Cancelar</button>
-                <button class="btn btn-success" type="submit">Salvar</button>
+                <button type="button" id="btn-cancelar" class="btn btn-secondary">Cancelar</button>
+                <button type="submit" id="btn-salvar" class="btn btn-success">Salvar</button>
             </form>
         </div>
     </main>

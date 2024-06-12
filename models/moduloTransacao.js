@@ -1,13 +1,14 @@
 const { DataTypes } = require('sequelize');
-const sequelize = require('../config/db'); // Ajuste o caminho conforme necessário
+const sequelize = require('../config/db');
+const Modulo = require('../models/modulos');
+const Transacao = require('../models/transacoes');
 
 const ModuloTransacao = sequelize.define('ModuloTransacao', {
-    // Atributos do modelo
     id_associacao: {
         type: DataTypes.INTEGER,
         allowNull: false,
-        primaryKey: true, // Define como chave primária
-        autoIncrement: true // Define auto-incremento se necessário
+        primaryKey: true,
+        autoIncrement: true
     },
     id_modulo: {
         type: DataTypes.INTEGER,
@@ -28,8 +29,20 @@ const ModuloTransacao = sequelize.define('ModuloTransacao', {
 }, {
     // Opções do modelo
     tableName: 'modulo_transacao',
-    schema: 'BÊ-á-Bá Oficial', // Especifica o schema
-    timestamps: false, // Sequelize adiciona automaticamente os campos createdAt e updatedAt
+    schema: 'BÊ-á-Bá Oficial',
+    timestamps: false
+});
+
+//Definindo os relacionamentos
+Modulo.belongsToMany(Transacao, {
+    through: ModuloTransacao,
+    foreignKey: 'id_modulo',
+    otherKey: 'id_transacao'
+});
+Transacao.belongsToMany(Modulo, {
+    through: ModuloTransacao,
+    foreignKey: 'id_transacao',
+    otherKey: 'id_modulo'
 });
 
 // Exporta o modelo

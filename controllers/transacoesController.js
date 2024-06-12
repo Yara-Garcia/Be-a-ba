@@ -22,7 +22,7 @@ const createTransaction = async (req, res) => {
         const newTransaction = await Transacao.create({ nome_transacao, descricao });
 
         // Adiciona chave success na resposta JSON
-        res.status(201).json({ success: true, user: newTransaction.dataValues });
+        res.status(201).json({ success: true, transaction: newTransaction.dataValues });
     } catch (error) {
         res.status(500).json({ success: false, message: 'Erro interno do servidor!' });
     }
@@ -83,8 +83,39 @@ const deleteTransaction = async (req, res) => {
     }
 }
 
+const getTransactionInfos = async (req, res) => {
+
+    const { id_transacao } = req.params;
+    try {
+        const transaction = await Transacao.findOne({ where: { id_transacao: id_transacao } });
+
+        if (transaction === null) {
+            return res.status(400).json({ success: false, message: 'Transação não encontrada para o ID informado!' });
+        }
+
+        return res.status(200).json({ success: true, transaction });
+    } catch (erro) {
+        console.log(erro.message)
+        return res.status(500).json({ success: false, mensagem: 'Erro interno do servidor.' });
+    }
+};
+
+const showTransactions = async (req, res) => {
+    try {
+        const transactions = await Transacao.findAll();
+
+        return res.status(200).json({ success: true, transactions });
+    } catch (erro) {
+        console.log(erro.message)
+        return res.status(500).json({ success: false, mensagem: 'Erro interno do servidor.' });
+    }
+};
+
+
 module.exports = {
     createTransaction,
     updateTransaction,
-    deleteTransaction
+    deleteTransaction,
+    getTransactionInfos,
+    showTransactions
 }

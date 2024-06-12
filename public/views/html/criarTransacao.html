@@ -10,6 +10,7 @@
     <link rel="stylesheet" type="text/css" href="../../css/header.css" media="screen">
     <link rel="stylesheet" type="text/css" href="../../css/menu.css" media="screen">
     <link rel="stylesheet" type="text/css" href="../../css/styles-forms.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="../../css/dropdown.css" media="screen">
 </head>
 
 <body>
@@ -86,25 +87,26 @@
             <br>
             <form id="form-container">
                 <div class="mb-3 campo">
-                    <label for="selecionar-modulo" class="form-label">Módulo:</label>
-                    <select id="selecionar-modulo" class="form-select" required>
-                        <option value="" disabled selected>Selecione</option>
-                        <option value="Compras">Compras</option>
-                        <option value="Estoque">Estoque</option>
-                        <option value="Financeiro">Financeiro</option>
-                    </select>
+                    <div class="dropdown" id="dropdownModules">
+                        <label class="form-label" for="associar-modulos">Associar a Módulo(s):</label>
+                        <button class="dropdown-btn">Selecione as opções</button>
+                        <div class="dropdown-content">
+                            <input type="text" class="dropdown-search" placeholder="Pesquisar módulos...">
+                            <!-- Aqui você pode adicionar a lista de checkboxes com os módulos -->
+                        </div>
+                    </div>
                 </div>
                 <div class="mb-3 campo-nome-transacao">
-                    <label for="nome" class="form-label">Nome da Transação:</label>
-                    <input type="text" class="form-control" id="nome" name="nome" required>
+                    <label for="nome-transacao" class="form-label">Nome da Transação:</label>
+                    <input type="text" class="form-control" id="nome-transacao" name="nome-transacao" required>
                 </div>
                 <div class="mb-3 campo">
                     <label for="descricao" class="form-label">Descrição:</label>
                     <textarea class="form-control" rows="6" id="descricao" name="descricao"
                         placeholder="Opcional"></textarea>
                 </div>
-                <button class="btn btn-secondary" type="button">Cancelar</button>
-                <button class="btn btn-success" type="submit">Salvar</button>
+                <button type="button" id="btn-cancelar" class="btn btn-secondary">Cancelar</button>
+                <button type="submit" id="btn-salvar" class="btn btn-success">Salvar</button>
             </form>
         </div>
     </main>
@@ -118,6 +120,7 @@
         integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
         crossorigin="anonymous"></script>
     <script src="../../js/menuScript.js"></script>
+    <script src="../../js/criarTransacao.js"></script>
 </body>
 
 </html>
