@@ -1,4 +1,4 @@
-//import { confirmarExclusaoModulo } from "./deletarModulo.js";
+import { confirmarExclusaoTransacao } from "./deletarTransacao.js";
 
 fetch('http://localhost:3000/transactions', {
     method: 'GET'
@@ -48,7 +48,7 @@ fetch('http://localhost:3000/transactions', {
                     modal.show();
 
                     const transactionId = this.getAttribute('transaction-id');
-                    //confirmarExclusaoTransacao(transactionId);
+                    confirmarExclusaoTransacao(transactionId);
                 });
 
                 editarIcon.setAttribute('data-bs-toggle', 'tooltip');
