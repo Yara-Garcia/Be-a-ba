@@ -101,50 +101,53 @@ document.getElementById('form-container').addEventListener('submit', function (e
         })
         .then(data => {
             if (data.success) {
-                console.log(data)
                 const idTransacao = data.transaction.id_transacao; // Obter o ID da transação criada
 
-                // Obtenha os IDs dos módulos selecionados
-                const selectedModules = Array.from(document.querySelectorAll('.dropdown-content input[type="checkbox"]:checked'))
-                    .map(input => {
-                        return {
-                            id_modulo: input.value
-                        };
-                    });
-
-                // 2. Associar módulos à transação
-                const dadosAssociacao = {
-                    id_transacao: idTransacao,
-                    id_modulos: selectedModules
-                }
-
-                fetch('http://localhost:3000/moduleTransactionAssociation', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(dadosAssociacao)
-                })
-
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('Falha na requisição: ' + response.statusText);
-                        }
-                        return response.json();
-                    })
-                    .then(data => {
-                        if (data.success) {
-                            alert('Transação criada e módulos associados com sucesso!');
-                            window.location.href = '../html/gestaoTransacoes.html';
-                        } else {
-                            console.error('Erro:', data.message);
-                            alert('Falha na associação de módulos: ' + data.message);
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Erro:', error);
-                        alert('Falha na associação de módulos: ' + error.message);
-                    });
+                // Chama a função para associar os módulos à transação
+                associarModulos(idTransacao);
             }
         })
-})
+        .catch(error => {
+            console.error('Erro:', error);
+            alert('Falha na criação da transação: ' + error.message);
+        });
+});
+
+// Função para associar os módulos à transação
+async function associarModulos(idTransacao) {
+    const dadosAssociacao = Array.from(document.querySelectorAll('.dropdown-content input[type="checkbox"]:checked'))
+        .map(input => {
+            return {
+                id_transacao: idTransacao,
+                id_modulo: input.value
+            };
+        });
+    console.log(dadosAssociacao)
+
+    try {
+        const response = await fetch('http://localhost:3000/moduleTransactionAssociation', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(dadosAssociacao)
+        });
+
+        if (!response.ok) {
+            throw new Error('Falha na requisição: ' + response.statusText);
+        }
+
+        const data = await response.json();
+
+        if (data.success) {
+            alert('Transação criada e módulos associados com sucesso!');
+            window.location.href = '../html/gestaoTransaçoes.html';
+        } else {
+            console.error('Erro:', data.message);
+            alert('Falha na associação de módulos: ' + data.message);
+        }
+    } catch (error) {
+        console.error('Erro:', error);
+        alert('Falha na associação de módulos: ' + error.message);
+    }
+}
