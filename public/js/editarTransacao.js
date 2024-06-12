@@ -1,24 +1,9 @@
 document.addEventListener('DOMContentLoaded', function () {
     // Adicionar evento de clique aos botões do dropdown para mostrar/ocultar o conteúdo
     document.querySelectorAll('.dropdown-btn').forEach(button => {
-        button.addEventListener('click', function () {
+        button.addEventListener('click', function (event) {
+            event.preventDefault(); // Evitar a navegação padrão
             this.parentElement.classList.toggle('show');
-        });
-    });
-
-    // Adicionar evento de entrada aos campos de pesquisa do dropdown para filtrar os módulos
-    document.querySelectorAll('.dropdown-search').forEach(search => {
-        search.addEventListener('input', function () {
-            var filter = this.value.toLowerCase();
-            var labels = this.parentElement.querySelectorAll('label');
-            labels.forEach(function (label) {
-                var text = label.textContent.toLowerCase();
-                if (text.includes(filter)) {
-                    label.style.display = 'block';
-                } else {
-                    label.style.display = 'none';
-                }
-            });
         });
     });
 
@@ -46,7 +31,6 @@ document.addEventListener('DOMContentLoaded', function () {
             const modulesData = await modulesResponse.json();
             const availableModules = modulesData.modules;
 
-
             // Marcar os checkboxes dos módulos disponíveis e associados à transação
             availableModules.forEach(module => {
                 const checkbox = document.createElement('input');
@@ -55,8 +39,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 checkbox.value = module.id_modulo;
                 checkbox.textContent = module.nome_modulo;
 
+
                 // Verificar se o módulo está associado à transação e marcar o checkbox, se necessário
-                if (transactionData.Modulos.id_modulo && transactionData.Modulos.includes(module.id_modulo)) {
+                const isModuleAssociated = transactionData.Modulos.some(mod => mod.id_modulo === module.id_modulo);
+
+                if (isModuleAssociated) {
                     checkbox.checked = true;
                 }
 
@@ -79,4 +66,85 @@ document.addEventListener('DOMContentLoaded', function () {
     if (transactionId) {
         carregarInformacoesTransacao(transactionId);
     }
+
+    //A PARTIR DAQUI NAO TA FUNCIONANDO. VERIFICAR
+
+    // Evento de mudança do checkbox
+    document.querySelectorAll('.dropdown-content input[type="checkbox"]').forEach(checkbox => {
+        checkbox.addEventListener('change', async function (event) {
+            event.preventDefault();
+            const transactionId = url.searchParams.get('id_transacao');
+            const moduleId = this.value;
+
+            if (this.checked) {
+                // Verificar se a associação já existe antes de criar uma nova
+                const associationExists = await checkAssociation(transactionId, moduleId);
+
+                if (!associationExists) {
+                    try {
+                        const response = await fetch('http://localhost:3000/moduleTransactionAssociation', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ id_transacao: transactionId, id_modulo: moduleId })
+                        });
+
+                        if (!response.ok) {
+                            throw new Error('Falha na requisição: ' + response.statusText);
+                        }
+
+                        const data = await response.json();
+                        if (!data.success) {
+                            throw new Error('Erro ao associar módulo: ' + data.message);
+                        }
+                    } catch (error) {
+                        console.error('Erro:', error);
+                        alert('Falha ao associar módulo: ' + error.message);
+                        this.checked = false; // Desfaz a marcação do checkbox em caso de erro
+                    }
+                }
+            } else {
+                // Desassociar módulo
+                try {
+                    const response = await fetch('http://localhost:3000/moduleTransactionAssociation', {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ id_transacao: transactionId, id_modulo: moduleId })
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('Falha na requisição: ' + response.statusText);
+                    }
+
+                    const data = await response.json();
+                    if (!data.success) {
+                        throw new Error('Erro ao desassociar módulo: ' + data.message);
+                    }
+                } catch (error) {
+                    console.error('Erro:', error);
+                    alert('Falha ao desassociar módulo: ' + error.message);
+                    this.checked = true; // Marca o checkbox novamente em caso de erro
+                }
+            }
+        });
+    });
 });
+
+// Função para verificar se a associação já existe
+async function checkAssociation(transactionId, moduleId) {
+    try {
+        const response = await fetch(`http://localhost:3000/moduleTransactionAssociation/check?transactionId=${transactionId}&moduleId=${moduleId}`);
+        if (!response.ok) {
+            throw new Error('Falha na requisição: ' + response.statusText);
+        }
+        const data = await response.json();
+        return data.exists; // Retorna true se a associação existe, false caso contrário
+    } catch (error) {
+        console.error('Erro ao verificar associação:', error);
+        alert('Erro ao verificar associação');
+        return false; // Assume que a associação não existe em caso de erro
+    }
+}
