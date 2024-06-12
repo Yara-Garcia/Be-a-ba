@@ -72,7 +72,7 @@ fetch('http://localhost:3000/modules', {
     });
 
 document.getElementById('btn-cancelar').addEventListener('click', function () {
-    window.location.href = '../html/gestaoTransaçoes.html';
+    window.location.href = '../html/gestaoTransacoes.html';
 });
 
 document.getElementById('form-container').addEventListener('submit', function (event) {
@@ -141,7 +141,7 @@ async function associarModulos(idTransacao) {
 
         if (data.success) {
             alert('Transação criada e módulos associados com sucesso!');
-            window.location.href = '../html/gestaoTransaçoes.html';
+            window.location.href = '../html/gestaoTransacoes.html';
         } else {
             console.error('Erro:', data.message);
             alert('Falha na associação de módulos: ' + data.message);
