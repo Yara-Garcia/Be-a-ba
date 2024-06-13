@@ -1,5 +1,6 @@
 document.querySelectorAll('.dropdown-btn').forEach(button => {
-    button.addEventListener('click', function () {
+    button.addEventListener('click', function (event) {
+        event.preventDefault();
         this.parentElement.classList.toggle('show');
     });
 });
@@ -75,7 +76,7 @@ document.getElementById('btn-cancelar').addEventListener('click', function () {
     window.location.href = '../html/gestaoTransacoes.html';
 });
 
-document.getElementById('form-container').addEventListener('submit', function (event) {
+document.getElementById('btn-salvar').addEventListener('click', function (event) {
     event.preventDefault(); // Impede que o formulário seja submetido de maneira convencional
 
     const nomeTransacao = document.getElementById('nome-transacao').value;
