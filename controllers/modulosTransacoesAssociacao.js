@@ -23,4 +23,42 @@ const moduleTransactionAssociation = async (req, res) => {
     }
 };
 
-module.exports = moduleTransactionAssociation;
+const deleteModuleTransactionAssociation = async (req, res) => {
+    const { id_associacao } = req.body;
+    try {
+        const associationExists = await ModuloTransacao.findOne({
+            where: {
+                id_associacao: id_associacao
+            }
+        });
+
+        if (associationExists === null) {
+            return res.status(400).json({ success: false, message: 'Associação não encontrada para o ID informado!' });
+        };
+
+        await ModuloTransacao.destroy({ where: { id_associacao: id_associacao } });
+
+        return res.status(200).json({ success: true, message: 'Associação excluída com sucesso.' });
+    } catch (error) {
+        console.error('Erro ao associar transação ao módulo:', error);
+        res.status(500).send('Erro ao associar transação.');
+    }
+};
+
+
+const showAssociations = async (Req, res) => {
+    try {
+        const associations = await ModuloTransacao.findAll();
+        return res.status(200).json({ success: true, associations });
+    } catch (erro) {
+        console.log(erro.message)
+        return res.status(500).json({ success: false, mensagem: 'Erro interno do servidor.' });
+    }
+};
+
+
+module.exports = {
+    moduleTransactionAssociation,
+    deleteModuleTransactionAssociation,
+    showAssociations
+}

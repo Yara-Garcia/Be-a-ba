@@ -9,7 +9,7 @@ const { createModule, updateModule, deleteModule, showModules, getModuleInfos } 
 const { createProfile, updateProfile, deleteProfile, showProfiles } = require('./controllers/perfisControllers');
 const { createTransaction, updateTransaction, deleteTransaction, getTransactionInfos, showTransactions } = require('./controllers/transacoesController');
 const { createFunction, updateFunction, deleteFunction } = require('./controllers/funcoesController');
-const moduleTransactionAssociation = require('./controllers/modulosTransacoesAssociacao');
+const { moduleTransactionAssociation, showAssociations, deleteModuleTransactionAssociation } = require('./controllers/modulosTransacoesAssociacao');
 
 const app = express();
 const PORT = 3000;
@@ -61,6 +61,8 @@ app.delete('/transaction/:id_transacao', deleteTransaction);
 app.get('/transaction/:id_transacao', getTransactionInfos);
 app.get('/transactions', showTransactions);
 app.post('/moduleTransactionAssociation', moduleTransactionAssociation);
+app.delete('/deleteModuleTransactionAssociation/:id_associacao', deleteModuleTransactionAssociation);
+app.get('/moduleTransactionAssociationsList', showAssociations);
 app.post('/function', createFunction);
 app.put('/function/:id_funcao', updateFunction);
 app.delete('/function/:id_funcao', deleteFunction);
