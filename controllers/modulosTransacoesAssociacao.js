@@ -24,7 +24,8 @@ const moduleTransactionAssociation = async (req, res) => {
 };
 
 const deleteModuleTransactionAssociation = async (req, res) => {
-    const { id_associacao } = req.body;
+    const { id_associacao } = req.params;
+
     try {
         const associationExists = await ModuloTransacao.findOne({
             where: {
@@ -40,10 +41,11 @@ const deleteModuleTransactionAssociation = async (req, res) => {
 
         return res.status(200).json({ success: true, message: 'Associação excluída com sucesso.' });
     } catch (error) {
-        console.error('Erro ao associar transação ao módulo:', error);
-        res.status(500).send('Erro ao associar transação.');
+        console.error('Erro ao deletar associação:', error);
+        res.status(500).send('Erro ao deletar associação.');
     }
 };
+
 
 
 const showAssociations = async (Req, res) => {

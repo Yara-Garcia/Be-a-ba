@@ -101,74 +101,66 @@ document.getElementById('btn-cancelar').addEventListener('click', function () {
     window.location.href = '../html/gestaoTransacoes.html';
 });
 
+// Função para associar os módulos à transação
+async function associarModulos(dadosAssociacao) {
+    try {
+        const response = await fetch('http://localhost:3000/moduleTransactionAssociation', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(dadosAssociacao)
+        });
+
+        if (!response.ok) {
+            throw new Error('Falha na requisição: ' + response.statusText);
+        }
+
+        const data = await response.json();
+
+        if (data.success) {
+            console.log('Módulos associados com sucesso!');
+        } else {
+            throw new Error('Erro ao associar módulos: ' + data.message);
+        }
+    } catch (error) {
+        console.error('Erro:', error);
+        alert('Falha ao associar módulos: ' + error.message);
+    }
+}
+
 document.getElementById('btn-salvar').addEventListener('click', async function (event) {
     event.preventDefault(); // Impede que o formulário seja submetido de maneira convencional
 
-    const nomeTransacao = document.getElementById('nome-transacao').value;
-    const descricao = document.getElementById('descricao').value;
-
-    const dadosTransacao = {
-        nome_transacao: nomeTransacao,
-        descricao: descricao
-    }
 
     try {
-        const checkboxes = document.querySelectorAll('.dropdown-content input[type="checkbox"]');
+        const checkboxes = document.querySelectorAll('.dropdown-content input[type="checkbox"]:checked');
+        const dadosAssociacao = [];
 
         for (let checkbox of checkboxes) {
             const moduleId = checkbox.value;
 
-            console.log(moduleId)
+            // Verificar se a associação já existe antes de criar uma nova
+            const { exists: associationExists } = await checkAssociation(transactionId, moduleId);
 
-            if (checkbox.checked) {
-                // Verificar se a associação já existe antes de criar uma nova
-                const { exists: associationExists, id: associationId } = await checkAssociation(transactionId, moduleId);
-
-                console.log(associationExists)
-                if (!associationExists) {
-                    // Criar associação
-                    const response = await fetch('http://localhost:3000/moduleTransactionAssociation', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({ id_transacao: transactionId, id_modulo: moduleId })
-                    });
-
-                    if (!response.ok) {
-                        throw new Error('Falha na requisição: ' + response.statusText);
-                    }
-                }
-            } else {
-                // Obter o id da associação
-                const { exists: associationExists, id: associationId } = await checkAssociation(transactionId, moduleId);
-
-                if (associationExists) {
-                    // Deletar associação
-                    const response = await fetch('http://localhost:3000/deleteModuleTransactionAssociation', {
-                        method: 'DELETE',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({ associationId })
-                    });
-
-                    if (!response.ok) {
-                        throw new Error('Falha na requisição: ' + response.statusText);
-                    }
-
-                    const data = await response.json();
-                    if (!data.success) {
-                        throw new Error('Erro ao desassociar módulo: ' + data.message);
-                    }
-                }
+            if (!associationExists) {
+                dadosAssociacao.push({
+                    id_transacao: transactionId,
+                    id_modulo: moduleId
+                });
             }
         }
 
+        // Se houver novas associações a serem feitas
+        if (dadosAssociacao.length > 0) {
+            await associarModulos(dadosAssociacao);
+        }
+
+        // Após a edição, exiba uma mensagem de sucesso
         alert('Edição de transação realizada com sucesso!');
-        window.location.href = '../html/gestaoTransacoes.html';
+        window.location.href = '../html/gestaoTransacoes.html'; // Redirecionar para a página de gestão de transações
     } catch (error) {
         console.error('Erro:', error);
-        alert('Falha ao associar/desassociar módulo: ' + error.message);
+        alert('Falha na edição da transação: ' + error.message);
     }
 });
