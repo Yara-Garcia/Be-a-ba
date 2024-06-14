@@ -23,7 +23,7 @@ async function carregarInformacoesTransacao(transactionId) {
         document.getElementById('descricao').value = transactionData.descricao;
 
         const dropdownContent = document.querySelector('.dropdown-content');
-        dropdownContent.innerHTML = ''; // Limpar o conteúdo atual
+        dropdownContent.innerHTML = '';
 
         // Carregar todos os módulos disponíveis
         const modulesResponse = await fetch('http://localhost:3000/modules');
@@ -163,7 +163,7 @@ document.getElementById('btn-salvar').addEventListener('click', async function (
     const descricao = document.getElementById('descricao').value;
 
     const dadosTransacao = {
-        transacao: nomeTransacao,
+        nome_transacao: nomeTransacao,
         descricao: descricao
     };
 
@@ -183,7 +183,7 @@ document.getElementById('btn-salvar').addEventListener('click', async function (
         .then(data => {
             if (data.success) {
                 alert('Edição de transação realizada com sucesso!');
-                window.location.href = '../html/gestaoTransacoes.html';
+
             } else {
                 console.log('Data:', data.message)
                 alert('Falha na edição: ' + data.message);
@@ -197,12 +197,9 @@ document.getElementById('btn-salvar').addEventListener('click', async function (
 
         for (let checkbox of checkboxes) {
             const moduleId = checkbox.value;
-            console.log(moduleId)
 
             // Verificar se a associação já existe antes de criar uma nova
             const { exists: associationExists, id: associationId } = await checkAssociation(transactionId, moduleId);
-            console.log(associationExists)
-            console.log(associationId)
 
             if (checkbox.checked) {
                 if (!associationExists) {
@@ -234,5 +231,6 @@ document.getElementById('btn-salvar').addEventListener('click', async function (
         console.error('Erro:', error);
         alert('Falha na edição da transação: ' + error.message);
     }
+    window.location.href = '../html/gestaoTransacoes.html';
 });
 
