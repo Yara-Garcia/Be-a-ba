@@ -85,8 +85,38 @@ const deleteFunction = async (req, res) => {
     }
 }
 
+const getFunctionInfos = async (req, res) => {
+
+    const { id_funcao } = req.params;
+    try {
+        const functionInfo = await Funcao.findOne({ where: { id_funcao: id_funcao } });
+
+        if (functionInfo === null) {
+            return res.status(400).json({ success: false, message: 'Função não encontrada para o ID informado!' });
+        }
+
+        return res.status(200).json({ success: true, functionInfo });
+    } catch (erro) {
+        console.log(erro.message)
+        return res.status(500).json({ success: false, mensagem: 'Erro interno do servidor.' });
+    }
+};
+
+const showFunctions = async (req, res) => {
+    try {
+        const functions = await Funcao.findAll();
+        console.log(functions)
+        return res.status(200).json({ success: true, functions });
+    } catch (erro) {
+        console.log(erro.message)
+        return res.status(500).json({ success: false, mensagem: 'Erro interno do servidor.' });
+    }
+};
+
 module.exports = {
     createFunction,
     updateFunction,
-    deleteFunction
+    deleteFunction,
+    getFunctionInfos,
+    showFunctions
 }

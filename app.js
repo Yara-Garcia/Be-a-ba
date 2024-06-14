@@ -8,7 +8,7 @@ const authenticateUser = require('./middlewares/authetication');
 const { createModule, updateModule, deleteModule, showModules, getModuleInfos } = require('./controllers/modulosController');
 const { createProfile, updateProfile, deleteProfile, showProfiles } = require('./controllers/perfisControllers');
 const { createTransaction, updateTransaction, deleteTransaction, getTransactionInfos, showTransactions } = require('./controllers/transacoesController');
-const { createFunction, updateFunction, deleteFunction } = require('./controllers/funcoesController');
+const { createFunction, updateFunction, deleteFunction, getFunctionInfos, showFunctions } = require('./controllers/funcoesController');
 const { moduleTransactionAssociation, showAssociations, deleteModuleTransactionAssociation } = require('./controllers/modulosTransacoesAssociacao');
 
 const app = express();
@@ -66,4 +66,6 @@ app.get('/moduleTransactionAssociationsList', showAssociations);
 app.post('/function', createFunction);
 app.put('/function/:id_funcao', updateFunction);
 app.delete('/function/:id_funcao', deleteFunction);
+app.get('/function/:id_funcao', getFunctionInfos);
+app.get('/functions', showFunctions);
 
