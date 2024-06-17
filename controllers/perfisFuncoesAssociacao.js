@@ -9,17 +9,28 @@ const profileFunctionAssociation = async (req, res) => {
     const associations = req.body; // Recebe a matriz de objetos
 
     try {
+        const createdAssociations = [];
+
         for (const { id_perfil, id_transacao, id_funcao } of associations) {
             const profile = await Perfil.findByPk(id_perfil);
             const transaction = await Transacao.findByPk(id_transacao);
             const func = await Funcao.findByPk(id_funcao);
+
             if (!profile || !transaction || !func) {
                 return res.status(404).send('Perfil, transação ou função não encontrado.');
             }
-            await transaction.addPerfil(profile);//o sequelize entende que é o relacionamento definido entre transacoes e perfis
-            await transaction.addFuncao(func);
+
+            // Cria uma nova instância de PerfilFuncao para a associação atual
+            const newAssociation = await PerfilFuncao.create({
+                id_perfil: profile.id_perfil,
+                id_transacao: transaction.id_transacao,
+                id_funcao: func.id_funcao
+            });
+
+            createdAssociations.push(newAssociation);
         }
-        res.status(200).json({ success: true, message: 'Associação entre perfil, transação e função realizada com sucesso.' });
+
+        res.status(200).json({ success: true, message: 'Associações entre perfil, transação e função realizadas com sucesso.', associations: createdAssociations });
     } catch (error) {
         console.error('Erro ao associar:', error);
         res.status(500).send('Erro ao associar perfil.');
@@ -50,7 +61,7 @@ const deleteProfileFunctionAssociation = async (req, res) => {
 };
 
 
-const showAssociations = async (req, res) => {
+const getFunctionAssociations = async (req, res) => {
     try {
         const associations = await PerfilFuncao.findAll();
         return res.status(200).json({ success: true, associations });
@@ -64,5 +75,5 @@ const showAssociations = async (req, res) => {
 module.exports = {
     profileFunctionAssociation,
     deleteProfileFunctionAssociation,
-    showAssociations
+    getFunctionAssociations
 }

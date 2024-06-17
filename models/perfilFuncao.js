@@ -1,5 +1,8 @@
 const { DataTypes } = require('sequelize');
-const sequelize = require('../config/db'); // Ajuste o caminho conforme necessário
+const sequelize = require('../config/db');
+const Perfil = require("../models/perfis");
+const Transacao = require("../models/transacoes")
+const Funcao = require("../models/funcoes");
 
 const PerfilFuncao = sequelize.define('PerfilFuncao', {
     // Atributos do modelo

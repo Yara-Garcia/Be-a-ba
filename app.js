@@ -10,6 +10,7 @@ const { createProfile, updateProfile, deleteProfile, showProfiles } = require('.
 const { createTransaction, updateTransaction, deleteTransaction, getTransactionInfos, showTransactions } = require('./controllers/transacoesController');
 const { createFunction, updateFunction, deleteFunction, getFunctionInfos, showFunctions } = require('./controllers/funcoesController');
 const { moduleTransactionAssociation, showAssociations, deleteModuleTransactionAssociation } = require('./controllers/modulosTransacoesAssociacao');
+const { profileFunctionAssociation, deleteProfileFunctionAssociation, getFunctionAssociations } = require('./controllers/perfisFuncoesAssociacao');
 
 const app = express();
 const PORT = 3000;
@@ -60,12 +61,17 @@ app.put('/transaction/:id_transacao', updateTransaction);
 app.delete('/transaction/:id_transacao', deleteTransaction);
 app.get('/transaction/:id_transacao', getTransactionInfos);
 app.get('/transactions', showTransactions);
-app.post('/moduleTransactionAssociation', moduleTransactionAssociation);
-app.delete('/deleteModuleTransactionAssociation/:id_associacao', deleteModuleTransactionAssociation);
-app.get('/moduleTransactionAssociationsList', showAssociations);
 app.post('/function', createFunction);
 app.put('/function/:id_funcao', updateFunction);
 app.delete('/function/:id_funcao', deleteFunction);
 app.get('/function/:id_funcao', getFunctionInfos);
 app.get('/functions', showFunctions);
+
+//rotas de associação
+app.post('/moduleTransactionAssociation', moduleTransactionAssociation);
+app.delete('/deleteModuleTransactionAssociation/:id_associacao', deleteModuleTransactionAssociation);
+app.get('/moduleTransactionAssociationsList', showAssociations);
+app.post('/profileFunctionAssociation', profileFunctionAssociation);
+app.delete('/deleteProfileFunctionAssociation/:id_associacao', deleteProfileFunctionAssociation);
+app.get('/profileFunctionAssociationsList', getFunctionAssociations);
 
