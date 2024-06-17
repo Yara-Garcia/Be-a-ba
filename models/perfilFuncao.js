@@ -40,5 +40,16 @@ const PerfilFuncao = sequelize.define('PerfilFuncao', {
     timestamps: false, // Sequelize adiciona automaticamente os campos createdAt e updatedAt
 });
 
+Perfil.belongsToMany(Transacao, {
+    through: PerfilFuncao,
+    foreignKey: 'id_perfil',
+    otherKey: 'id_transacao'
+});
+Transacao.belongsToMany(Funcao, {
+    through: PerfilFuncao,
+    foreignKey: 'id_transacao',
+    otherKey: 'id_funcao'
+});
+
 // Exporta o modelo
 module.exports = PerfilFuncao;

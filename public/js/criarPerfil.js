@@ -194,8 +194,7 @@ document.getElementById('btn-cancelar').addEventListener('click', function () {
 // Event listener para o botão salvar
 document.getElementById('btn-salvar').addEventListener('click', function (event) {
     event.preventDefault();
-    // Implemente a lógica de salvar as transações selecionadas, se necessário
-    console.log('Implemente a lógica de salvar as transações selecionadas');
+
 });
 
 // Inicialização da página
