@@ -1,5 +1,7 @@
 const { DataTypes } = require('sequelize');
-const sequelize = require('../config/db'); // Ajuste o caminho conforme necessário
+const sequelize = require('../config/db');
+const Perfil = require('../models/perfis');
+const Transacao = require('../models/transacoes');
 
 const PerfilTransacao = sequelize.define('PerfilTransacao', {
     // Atributos do modelo
@@ -30,6 +32,17 @@ const PerfilTransacao = sequelize.define('PerfilTransacao', {
     tableName: 'perfil_transacao',
     schema: 'BÊ-á-Bá Oficial', // Especifica o schema
     timestamps: false, // Sequelize adiciona automaticamente os campos createdAt e updatedAt
+});
+
+Perfil.belongsToMany(Transacao, {
+    through: PerfilTransacao,
+    foreignKey: 'id_perfil',
+    otherKey: 'id_transacao'
+});
+Transacao.belongsToMany(Perfil, {
+    through: PerfilTransacao,
+    foreignKey: 'id_transacao',
+    otherKey: 'id_perfil'
 });
 
 // Exporta o modelo
