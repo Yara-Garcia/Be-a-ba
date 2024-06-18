@@ -151,9 +151,10 @@ function atualizarDropdownTransacoes(transactions) {
 }
 
 // Função para abrir o modal com funções associadas à transação selecionada
+
 function abrirModalDeFuncoes(transactionId) {
     const modalBody = document.querySelector('#functionsModal .modal-body');
-    modalBody.innerHTML = '';
+    modalBody.innerHTML = ''; // Limpa o conteúdo anterior do modal
 
     fetch('http://localhost:3000/functions')
         .then(response => {
@@ -179,30 +180,13 @@ function abrirModalDeFuncoes(transactionId) {
                 // Mostra o modal após carregar as funções
                 $('#functionsModal').modal('show');
 
-                // Adicionar listener para o botão salvar dentro do modal
-                document.getElementById('btn-salvar-modal').addEventListener('click', async function (event) {
-                    event.preventDefault();
+                // Limpar event listeners antigos dos botões de salvar e fechar
+                document.getElementById('btn-salvar-modal').removeEventListener('click', salvarFuncoesModal);
+                document.getElementById('btn-fechar-modal').removeEventListener('click', fecharModal);
 
-                    const perfilId = await criarPerfil();
-                    const dadosAssociacaoTransacaoFuncao = Array.from(document.querySelectorAll('#functionsModal .modal-body input[type="checkbox"]:checked'))
-                        .map(input => ({
-                            id_transacao: transactionId,
-                            id_funcao: input.value
-                        }));
-
-                    await associarModulos(perfilId);
-
-                    await associarTransacoesFuncoes(perfilId, dadosAssociacaoTransacaoFuncao);
-
-                    alert('Perfil criado e associações realizadas com sucesso!');
-                    window.location.href = '../html/gestaoPerfis.html';
-                });
-
-                // Adicionar listener para o botão fechar dentro do modal
-                document.getElementById('btn-fechar-modal').addEventListener('click', function (event) {
-                    event.preventDefault();
-                    $('#functionsModal').modal('hide');
-                });
+                // Adicionar novos event listeners para os botões de salvar e fechar
+                document.getElementById('btn-salvar-modal').addEventListener('click', salvarFuncoesModal);
+                document.getElementById('btn-fechar-modal').addEventListener('click', fecharModal);
 
             } else {
                 console.error('Erro ao buscar funções:', data.message);
@@ -211,7 +195,43 @@ function abrirModalDeFuncoes(transactionId) {
         .catch(error => {
             console.error('Erro:', error);
         });
+
+    // Variável global para armazenar o ID do perfil
+    let perfilId = null;
+
+    // Função para salvar as funções selecionadas no modal
+    async function salvarFuncoesModal(event) {
+        event.preventDefault();
+
+        try {
+            if (!perfilId) {
+                perfilId = await criarPerfil(); // Cria o perfil apenas se ainda não existir
+            }
+
+            const dadosAssociacaoTransacaoFuncao = Array.from(document.querySelectorAll('#functionsModal .modal-body input[type="checkbox"]:checked'))
+                .map(input => ({
+                    id_transacao: transactionId,
+                    id_funcao: input.value
+                }));
+
+            await associarModulos(perfilId); // Aguarda a associação de módulos
+            await associarTransacoesFuncoes(perfilId, dadosAssociacaoTransacaoFuncao); // Aguarda a associação de transações e funções
+
+            alert('Associações realizadas com sucesso!');
+            $('#functionsModal').modal('hide');
+        } catch (error) {
+            console.error('Erro:', error);
+            alert('Falha ao salvar associações: ' + error.message);
+        }
+    }
+
+    // Função para fechar o modal
+    function fecharModal(event) {
+        event.preventDefault();
+        $('#functionsModal').modal('hide');
+    }
 }
+
 
 // Função para criar um perfil
 async function criarPerfil() {
@@ -317,6 +337,7 @@ async function associarTransacoesFuncoes(idPerfil, dadosAssociacaoTransacaoFunca
         throw error; // Lançar novamente o erro para que o bloco catch no botão salvar possa capturá-lo
     }
 }
+
 
 // Event listener para o botão cancelar
 document.getElementById('btn-cancelar').addEventListener('click', function () {
