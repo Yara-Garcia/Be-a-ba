@@ -11,6 +11,7 @@ const { createTransaction, updateTransaction, deleteTransaction, getTransactionI
 const { createFunction, updateFunction, deleteFunction, getFunctionInfos, showFunctions } = require('./controllers/funcoesController');
 const { moduleTransactionAssociation, showAssociations, deleteModuleTransactionAssociation } = require('./controllers/modulosTransacoesAssociacao');
 const { profileFunctionAssociation, deleteProfileFunctionAssociation, getFunctionAssociations } = require('./controllers/perfisFuncoesAssociacao');
+const { profileModuleAssociation, deleteProfileModuleAssociation, getProfileModuleAssociations } = require('./controllers/perfilModulosAssociacao');
 
 const app = express();
 const PORT = 3000;
@@ -74,4 +75,7 @@ app.get('/moduleTransactionAssociationsList', showAssociations);
 app.post('/profileFunctionAssociation', profileFunctionAssociation);
 app.delete('/deleteProfileFunctionAssociation/:id_associacao', deleteProfileFunctionAssociation);
 app.get('/profileFunctionAssociationsList', getFunctionAssociations);
+app.post('/profileModuleAssociation', profileModuleAssociation);
+app.delete('/deleteProfileModuleAssociation/:id_associacao', deleteProfileModuleAssociation);
+app.get('/profileModuleAssociationsList', getProfileModuleAssociations);
 
