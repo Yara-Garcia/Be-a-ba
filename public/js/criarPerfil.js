@@ -190,6 +190,8 @@ function abrirModalDeFuncoes(transactionId) {
                             id_funcao: input.value
                         }));
 
+                    await associarModulos(perfilId);
+
                     await associarTransacoesFuncoes(perfilId, dadosAssociacaoTransacaoFuncao);
 
                     alert('Perfil criado e associações realizadas com sucesso!');
@@ -247,6 +249,41 @@ async function criarPerfil() {
         throw error;
     }
 }
+
+// Função para associar módulos ao perfil
+async function associarModulos(idPerfil) {
+    const dadosAssociacao = Array.from(document.querySelectorAll('.dropdown-content input[type="checkbox"]:checked'))
+        .map(input => {
+            return {
+                id_perfil: idPerfil,
+                id_modulo: input.value
+            };
+        });
+
+    try {
+        const response = await fetch('http://localhost:3000/profileModuleAssociation', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(dadosAssociacao)
+        });
+
+        if (!response.ok) {
+            throw new Error('Falha na requisição para associar módulos: ' + response.statusText);
+        }
+
+        const data = await response.json();
+
+        if (!data.success) {
+            throw new Error('Falha ao associar módulos: ' + data.message);
+        }
+    } catch (error) {
+        console.error('Erro:', error);
+        throw error; // Lançar novamente o erro para que o bloco catch no botão salvar possa capturá-lo
+    }
+}
+
 
 // Função para associar transações e funções ao perfil
 async function associarTransacoesFuncoes(idPerfil, dadosAssociacaoTransacaoFuncao) {
