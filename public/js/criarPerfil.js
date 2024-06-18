@@ -255,8 +255,8 @@ async function associarModulos(idPerfil) {
     const dadosAssociacao = Array.from(document.querySelectorAll('.dropdown-content input[type="checkbox"]:checked'))
         .map(input => {
             return {
-                id_perfil: idPerfil,
-                id_modulo: input.value
+                id_perfil: idPerfil.toString(), // Convertendo para string
+                id_modulo: input.value.toString() // Convertendo para string
             };
         });
 
@@ -268,6 +268,7 @@ async function associarModulos(idPerfil) {
             },
             body: JSON.stringify(dadosAssociacao)
         });
+
 
         if (!response.ok) {
             throw new Error('Falha na requisição para associar módulos: ' + response.statusText);
