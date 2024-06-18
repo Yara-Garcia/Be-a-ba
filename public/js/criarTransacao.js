@@ -87,7 +87,7 @@ document.getElementById('btn-salvar').addEventListener('click', function (event)
         descricao: descricao
     }
 
-    fetch('http://localhost:3000/transaction', {
+    fetch('http://localhost:3000/function', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -123,7 +123,6 @@ async function associarModulos(idTransacao) {
                 id_modulo: input.value
             };
         });
-    console.log(dadosAssociacao)
 
     try {
         const response = await fetch('http://localhost:3000/moduleTransactionAssociation', {

@@ -22,7 +22,7 @@ const createProfile = async (req, res) => {
         const newProfile = await Perfil.create({ nome_perfil, descricao });
 
         // Adiciona chave success na resposta JSON
-        res.status(201).json({ success: true, user: newProfile.dataValues });
+        res.status(201).json({ success: true, profile: newProfile.dataValues });
     } catch (error) {
         console.error('Erro ao criar perfil:', error.message);
         // Adiciona chave success na resposta JSON para casos de erro

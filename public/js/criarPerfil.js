@@ -195,7 +195,84 @@ document.getElementById('btn-cancelar').addEventListener('click', function () {
 document.getElementById('btn-salvar').addEventListener('click', function (event) {
     event.preventDefault();
 
+    const nomePerfil = document.getElementById('nome-perfil').value;
+    const descricao = document.getElementById('descricao').value;
+
+    const dadosPerfil = {
+        nome_perfil: nomePerfil,
+        descricao: descricao
+    }
+
+    fetch('http://localhost:3000/function', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(dadosPerfil)
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Falha na requisição: ' + response.statusText);
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                const idPerfil = data.profile.id_perfil;
+
+                // Chama a função para associar os módulos à transação
+                associarModulos(idPerfil);
+            }
+        })
+        .catch(error => {
+            console.error('Erro:', error);
+            alert('Falha na criação da transação: ' + error.message);
+        });
+
 });
+
+async function associarModulos(idPerfil) {
+    const dadosAssociacao = Array.from(document.querySelectorAll('.dropdown-content input[type="checkbox"]:checked'))
+        .map(input => {
+            return {
+                id_perfil: idPerfil,
+                id_modulo: input.value
+            };
+        });
+
+    try {
+        const response = await fetch('http://localhost:3000/profileModuleAssociation', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(dadosAssociacao)
+        });
+
+        if (!response.ok) {
+            throw new Error('Falha na requisição: ' + response.statusText);
+        }
+
+        const data = await response.json();
+
+        if (data.success) {
+            alert('Perfil criado e módulos associados com sucesso!');
+            window.location.href = '../html/gestaoPerfis.html';
+        } else {
+            console.error('Erro:', data.message);
+            alert('Falha na associação de módulos: ' + data.message);
+        }
+    } catch (error) {
+        console.error('Erro:', error);
+        alert('Falha na associação de módulos: ' + error.message);
+    }
+}
+
+//função para associar transacoes e funcoes
+async function associarTransacoesFuncoes(idPerfil) {
+
+}
+
 
 // Inicialização da página
 fetchModules();
