@@ -32,7 +32,7 @@ window.addEventListener('click', function (event) {
 
 
 // Função para buscar e popular os módulos no dropdown de seleção de módulos
-function fetchModules() {
+function buscarModulos() {
     fetch('http://localhost:3000/modules')
         .then(response => {
             if (!response.ok) {
@@ -60,7 +60,7 @@ function fetchModules() {
                     input.addEventListener('change', function (event) {
                         event.preventDefault();
                         const selectedModules = Array.from(document.querySelectorAll('.module-checkbox:checked')).map(el => el.value);
-                        fetchAssociatedTransactions(selectedModules);
+                        buscarTransacoesAssociadas(selectedModules);
                     });
                 });
             } else {
@@ -73,7 +73,7 @@ function fetchModules() {
 }
 
 // Função para buscar transações associadas aos módulos selecionados
-function fetchAssociatedTransactions(selectedModules) {
+function buscarTransacoesAssociadas(selectedModules) {
     console.log(selectedModules);
     fetch('http://localhost:3000/moduleTransactionAssociationsList')
         .then(response => {
@@ -84,12 +84,9 @@ function fetchAssociatedTransactions(selectedModules) {
         })
         .then(data => {
             if (data.success) {
-
                 const associatedTransactions = new Set();
-
                 data.associations.forEach(association => {
                     const moduloString = association.id_modulo.toString();
-
                     if (selectedModules.includes(moduloString)) {
                         associatedTransactions.add(association.id_transacao);
                     }
@@ -105,7 +102,7 @@ function fetchAssociatedTransactions(selectedModules) {
                     .then(data => {
                         if (data.success) {
                             const transactions = data.transactions.filter(transaction => associatedTransactions.has(transaction.id_transacao));
-                            updateTransactionsDropdown(transactions);
+                            atualizarDropdownTransacoes(transactions);
                         } else {
                             console.error('Erro ao buscar transações:', data.message);
                         }
@@ -123,7 +120,7 @@ function fetchAssociatedTransactions(selectedModules) {
 }
 
 // Função para atualizar o dropdown de transações com as transações filtradas
-function updateTransactionsDropdown(transactions) {
+function atualizarDropdownTransacoes(transactions) {
     const transactionDropdown = document.getElementById('transactionsDropdownContent');
     transactionDropdown.innerHTML = '';
 
@@ -138,20 +135,23 @@ function updateTransactionsDropdown(transactions) {
 
     document.getElementById('transactionsDropdown').style.display = transactions.length ? 'block' : 'none';
 
-    // Adicionar listener para abrir o modal com funções associadas à transação
+    // Adicionar listener para checkboxes das transações
     document.querySelectorAll('.transaction-checkbox').forEach(input => {
         input.addEventListener('change', function (event) {
             event.preventDefault();
             if (this.checked) {
                 const transactionId = this.value;
-                openFunctionsModal(transactionId);
+                abrirModalDeFuncoes(transactionId);
+            } else {
+                // Caso o checkbox seja desmarcado, fechar o modal se estiver aberto
+                $('#functionsModal').modal('hide');
             }
         });
     });
 }
 
-//Função para abrir o modal com funções associadas à transação selecionada
-function openFunctionsModal(transactionId) {
+// Função para abrir o modal com funções associadas à transação selecionada
+function abrirModalDeFuncoes(transactionId) {
     const modalBody = document.querySelector('#functionsModal .modal-body');
     modalBody.innerHTML = '';
 
@@ -164,16 +164,44 @@ function openFunctionsModal(transactionId) {
         })
         .then(data => {
             if (data.success) {
-
                 const functionsList = data.functions;
-                functionsList.forEach(func => {
 
+                functionsList.forEach(func => {
                     const label = document.createElement('label');
                     label.className = 'dropdown-item';
-                    label.innerHTML = `<input type="checkbox" value="${func.id_funcao}">
-                    ${func.nome_funcao}`;
+                    label.innerHTML = `
+                        <input type="checkbox" class="function-checkbox" value="${func.id_funcao}">
+                        ${func.nome_funcao}
+                    `;
                     modalBody.appendChild(label);
-                })
+                });
+
+                // Mostra o modal após carregar as funções
+                $('#functionsModal').modal('show');
+
+                // Adicionar listener para o botão salvar dentro do modal
+                document.getElementById('btn-salvar-modal').addEventListener('click', async function (event) {
+                    event.preventDefault();
+
+                    const perfilId = await criarPerfil();
+                    const dadosAssociacaoTransacaoFuncao = Array.from(document.querySelectorAll('#functionsModal .modal-body input[type="checkbox"]:checked'))
+                        .map(input => ({
+                            id_transacao: transactionId,
+                            id_funcao: input.value
+                        }));
+
+                    await associarTransacoesFuncoes(perfilId, dadosAssociacaoTransacaoFuncao);
+
+                    alert('Perfil criado e associações realizadas com sucesso!');
+                    window.location.href = '../html/gestaoPerfis.html';
+                });
+
+                // Adicionar listener para o botão fechar dentro do modal
+                document.getElementById('btn-fechar-modal').addEventListener('click', function (event) {
+                    event.preventDefault();
+                    $('#functionsModal').modal('hide');
+                });
+
             } else {
                 console.error('Erro ao buscar funções:', data.message);
             }
@@ -181,67 +209,55 @@ function openFunctionsModal(transactionId) {
         .catch(error => {
             console.error('Erro:', error);
         });
-
-    $('#functionsModal').modal('show');
-    console.log('Abrir modal com funções para a transação:', transactionId);
 }
 
-// Event listener para o botão cancelar
-document.getElementById('btn-cancelar').addEventListener('click', function () {
-    window.location.href = '../html/gestaoPerfis.html';
-});
-
-// Event listener para o botão salvar
-document.getElementById('btn-salvar').addEventListener('click', function (event) {
-    event.preventDefault();
-
+// Função para criar um perfil
+async function criarPerfil() {
     const nomePerfil = document.getElementById('nome-perfil').value;
     const descricao = document.getElementById('descricao').value;
 
     const dadosPerfil = {
         nome_perfil: nomePerfil,
         descricao: descricao
-    }
-
-    fetch('http://localhost:3000/function', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(dadosPerfil)
-    })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Falha na requisição: ' + response.statusText);
-            }
-            return response.json();
-        })
-        .then(data => {
-            if (data.success) {
-                const idPerfil = data.profile.id_perfil;
-
-                // Chama a função para associar os módulos à transação
-                associarModulos(idPerfil);
-            }
-        })
-        .catch(error => {
-            console.error('Erro:', error);
-            alert('Falha na criação da transação: ' + error.message);
-        });
-
-});
-
-async function associarModulos(idPerfil) {
-    const dadosAssociacao = Array.from(document.querySelectorAll('.dropdown-content input[type="checkbox"]:checked'))
-        .map(input => {
-            return {
-                id_perfil: idPerfil,
-                id_modulo: input.value
-            };
-        });
+    };
 
     try {
-        const response = await fetch('http://localhost:3000/profileModuleAssociation', {
+        const responsePerfil = await fetch('http://localhost:3000/profile', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(dadosPerfil)
+        });
+
+        if (!responsePerfil.ok) {
+            throw new Error('Falha na requisição para criar perfil: ' + responsePerfil.statusText);
+        }
+
+        const dataPerfil = await responsePerfil.json();
+
+        if (dataPerfil.success) {
+            return dataPerfil.profile.id_perfil;
+        } else {
+            throw new Error('Falha ao criar perfil: ' + dataPerfil.message);
+        }
+    } catch (error) {
+        console.error('Erro:', error);
+        alert('Falha na criação do perfil: ' + error.message);
+        throw error;
+    }
+}
+
+// Função para associar transações e funções ao perfil
+async function associarTransacoesFuncoes(idPerfil, dadosAssociacaoTransacaoFuncao) {
+    const dadosAssociacao = dadosAssociacaoTransacaoFuncao.map(associacao => ({
+        id_perfil: idPerfil,
+        id_transacao: associacao.id_transacao,
+        id_funcao: associacao.id_funcao
+    }));
+
+    try {
+        const response = await fetch('http://localhost:3000/profileFunctionAssociation', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -250,30 +266,24 @@ async function associarModulos(idPerfil) {
         });
 
         if (!response.ok) {
-            throw new Error('Falha na requisição: ' + response.statusText);
+            throw new Error('Falha na requisição para associar transações e funções: ' + response.statusText);
         }
 
         const data = await response.json();
 
-        if (data.success) {
-            alert('Perfil criado e módulos associados com sucesso!');
-            window.location.href = '../html/gestaoPerfis.html';
-        } else {
-            console.error('Erro:', data.message);
-            alert('Falha na associação de módulos: ' + data.message);
+        if (!data.success) {
+            throw new Error('Falha ao associar transações e funções: ' + data.message);
         }
     } catch (error) {
         console.error('Erro:', error);
-        alert('Falha na associação de módulos: ' + error.message);
+        throw error; // Lançar novamente o erro para que o bloco catch no botão salvar possa capturá-lo
     }
 }
 
-//função para associar transacoes e funcoes
-async function associarTransacoesFuncoes(idPerfil) {
-
-}
-
+// Event listener para o botão cancelar
+document.getElementById('btn-cancelar').addEventListener('click', function () {
+    window.location.href = '../html/gestaoPerfis.html';
+});
 
 // Inicialização da página
-fetchModules();
-
+buscarModulos();
