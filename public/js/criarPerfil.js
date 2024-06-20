@@ -135,12 +135,13 @@ function atualizarDropdownTransacoes(transactions) {
 
     document.getElementById('transactionsDropdown').style.display = transactions.length ? 'block' : 'none';
 
-    // Adicionar listener para checkboxes das transações
+
     document.querySelectorAll('.transaction-checkbox').forEach(input => {
         input.addEventListener('change', function (event) {
             event.preventDefault();
             if (this.checked) {
-                const transactionId = this.value;
+                let transactionId = this.value;
+
                 abrirModalDeFuncoes(transactionId);
             } else {
                 // Caso o checkbox seja desmarcado, fechar o modal se estiver aberto
@@ -150,7 +151,6 @@ function atualizarDropdownTransacoes(transactions) {
     });
 }
 
-// Função para abrir o modal com funções associadas à transação selecionada
 
 function abrirModalDeFuncoes(transactionId) {
     const modalBody = document.querySelector('#functionsModal .modal-body');
@@ -180,12 +180,7 @@ function abrirModalDeFuncoes(transactionId) {
                 // Mostra o modal após carregar as funções
                 $('#functionsModal').modal('show');
 
-                // Limpar event listeners antigos dos botões de salvar e fechar
-                document.getElementById('btn-salvar-modal').removeEventListener('click', salvarFuncoesModal);
                 document.getElementById('btn-fechar-modal').removeEventListener('click', fecharModal);
-
-                // Adicionar novos event listeners para os botões de salvar e fechar
-                document.getElementById('btn-salvar-modal').addEventListener('click', salvarFuncoesModal);
                 document.getElementById('btn-fechar-modal').addEventListener('click', fecharModal);
 
             } else {
@@ -196,50 +191,60 @@ function abrirModalDeFuncoes(transactionId) {
             console.error('Erro:', error);
         });
 
-    let perfilId = null;
-    // Função para salvar as funções selecionadas no modal
-    async function salvarFuncoesModal(event) {
-        event.preventDefault();
-        try {
-            const { exists: profileExists, id: idProfile } = await checarSePerfilExiste(perfilId);
-            if (!perfilId || !profileExists) {
-                perfilId = await criarPerfil(); // Cria o perfil apenas se ainda não existir
-            }
+}
 
-            // const transactionId = $('#functionsModal').data('transactionId');
+let perfilId = null;
+let associacoesPreSalvas = [];
+// Função para salvar as funções selecionadas no modal
+async function salvarFuncoesModal(transactionId) {
 
-            const dadosAssociacaoTransacaoFuncao = Array.from(document.querySelectorAll('#functionsModal .modal-body input[type="checkbox"]:checked'))
-                .map(input => ({
-                    id_transacao: transactionId,
-                    id_funcao: input.value
-                }));
+    try {
+        const { exists: profileExists, id: idProfile } = await checarSePerfilExiste(perfilId);
+        if (!perfilId || !profileExists) {
+            perfilId = await criarPerfil(); // Cria o perfil apenas se ainda não existir
+        }
 
-            let dadosAssociacao = [];
-            dadosAssociacao = dadosAssociacaoTransacaoFuncao.map(associacao => ({
+        const dadosAssociacaoTransacaoFuncao = Array.from(document.querySelectorAll('#functionsModal .modal-body input[type="checkbox"]:checked'))
+            .map(input => ({
                 id_perfil: perfilId,
-                id_transacao: associacao.id_transacao,
-                id_funcao: associacao.id_funcao
+                id_transacao: transactionId,
+                id_funcao: input.value
             }));
 
-            const { exists: associationExists, id: associationId } = await checkAssociationTransacoesFuncoes(dadosAssociacao);
-            await associarModulos(perfilId); // Aguarda a associação de módulos
-            if (!associationExists) {
-                await associarTransacoesFuncoes(perfilId, dadosAssociacaoTransacaoFuncao); // Aguarda a associação de transações e funções
-            }
+        dadosAssociacaoTransacaoFuncao.forEach(associacao => {
+            associacoesPreSalvas.push(associacao);
+        });
 
-            alert('Associações realizadas com sucesso!');
-            $('#functionsModal').modal('hide');
-        } catch (error) {
-            console.error('Erro:', error);
-            alert('Falha ao salvar associações: ' + error.message);
-        }
-    }
-
-    // Função para fechar o modal
-    function fecharModal(event) {
-        event.preventDefault();
+        alert('Funções selecionadas salvas temporariamente!');
         $('#functionsModal').modal('hide');
+    } catch (error) {
+        console.error('Erro:', error);
+        alert('Falha ao salvar associações: ' + error.message);
     }
+}
+
+document.getElementById('btn-salvar-modal').addEventListener('click', function (event) {
+    event.preventDefault();
+    let transactionId = null;
+
+    // Encontra o checkbox de transação marcado
+    document.querySelectorAll('.transaction-checkbox').forEach(input => {
+        if (input.checked) {
+            transactionId = input.value;
+        }
+    });
+
+    if (transactionId) {
+        salvarFuncoesModal(transactionId); // Chama salvarFuncoesModal com transactionId
+        fecharModal(event);
+    } else {
+        alert('Selecione uma transação antes de salvar as funções!');
+    }
+});
+
+function fecharModal(event) {
+    event.preventDefault();
+    $('#functionsModal').modal('hide');
 }
 
 
@@ -267,7 +272,6 @@ async function criarPerfil() {
         }
 
         const dataPerfil = await responsePerfil.json();
-        console.log(dataPerfil)
 
         if (dataPerfil.success) {
             return dataPerfil.profile.id_perfil;
@@ -300,7 +304,6 @@ async function associarModulos(idPerfil) {
             body: JSON.stringify(dadosAssociacao)
         });
 
-        console.log(dadosAssociacao)
         if (!response.ok) {
             throw new Error('Falha na requisição para associar módulos: ' + response.statusText);
         }
@@ -318,13 +321,7 @@ async function associarModulos(idPerfil) {
 
 
 // Função para associar transações e funções ao perfil
-async function associarTransacoesFuncoes(idPerfil, dadosAssociacaoTransacaoFuncao) {
-    let dadosAssociacao = [];
-    dadosAssociacao = dadosAssociacaoTransacaoFuncao.map(associacao => ({
-        id_perfil: idPerfil,
-        id_transacao: associacao.id_transacao,
-        id_funcao: associacao.id_funcao
-    }));
+async function associarTransacoesFuncoes(associacoesPreSalvas) {
 
     try {
         const response = await fetch('http://localhost:3000/profileFunctionAssociation', {
@@ -332,7 +329,7 @@ async function associarTransacoesFuncoes(idPerfil, dadosAssociacaoTransacaoFunca
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(dadosAssociacao)
+            body: JSON.stringify(associacoesPreSalvas)
         });
 
         if (!response.ok) {
@@ -406,6 +403,15 @@ async function checkAssociationTransacoesFuncoes(dadosAssociacao) {
         alert('Erro ao verificar associação');
     }
 }
+
+document.getElementById('btn-salvar').addEventListener('click', function (event) {
+    event.preventDefault();
+    associarModulos(perfilId);
+    associarTransacoesFuncoes(associacoesPreSalvas)
+    alert('Associações definitivas salvas!');
+    // window.location.href = '../html/gestaoPerfis.html';
+});
+
 
 // Event listener para o botão cancelar
 document.getElementById('btn-cancelar').addEventListener('click', function () {
