@@ -196,17 +196,17 @@ function abrirModalDeFuncoes(transactionId) {
             console.error('Erro:', error);
         });
 
-    // Variável global para armazenar o ID do perfil
     let perfilId = null;
-
     // Função para salvar as funções selecionadas no modal
     async function salvarFuncoesModal(event) {
         event.preventDefault();
-
         try {
-            if (!perfilId) {
+            const { exists: profileExists, id: idProfile } = await checarSePerfilExiste(perfilId);
+            if (!perfilId || !profileExists) {
                 perfilId = await criarPerfil(); // Cria o perfil apenas se ainda não existir
             }
+
+            // const transactionId = $('#functionsModal').data('transactionId');
 
             const dadosAssociacaoTransacaoFuncao = Array.from(document.querySelectorAll('#functionsModal .modal-body input[type="checkbox"]:checked'))
                 .map(input => ({
@@ -214,8 +214,18 @@ function abrirModalDeFuncoes(transactionId) {
                     id_funcao: input.value
                 }));
 
+            let dadosAssociacao = [];
+            dadosAssociacao = dadosAssociacaoTransacaoFuncao.map(associacao => ({
+                id_perfil: perfilId,
+                id_transacao: associacao.id_transacao,
+                id_funcao: associacao.id_funcao
+            }));
+
+            const { exists: associationExists, id: associationId } = await checkAssociationTransacoesFuncoes(dadosAssociacao);
             await associarModulos(perfilId); // Aguarda a associação de módulos
-            await associarTransacoesFuncoes(perfilId, dadosAssociacaoTransacaoFuncao); // Aguarda a associação de transações e funções
+            if (!associationExists) {
+                await associarTransacoesFuncoes(perfilId, dadosAssociacaoTransacaoFuncao); // Aguarda a associação de transações e funções
+            }
 
             alert('Associações realizadas com sucesso!');
             $('#functionsModal').modal('hide');
@@ -257,6 +267,7 @@ async function criarPerfil() {
         }
 
         const dataPerfil = await responsePerfil.json();
+        console.log(dataPerfil)
 
         if (dataPerfil.success) {
             return dataPerfil.profile.id_perfil;
@@ -308,7 +319,8 @@ async function associarModulos(idPerfil) {
 
 // Função para associar transações e funções ao perfil
 async function associarTransacoesFuncoes(idPerfil, dadosAssociacaoTransacaoFuncao) {
-    const dadosAssociacao = dadosAssociacaoTransacaoFuncao.map(associacao => ({
+    let dadosAssociacao = [];
+    dadosAssociacao = dadosAssociacaoTransacaoFuncao.map(associacao => ({
         id_perfil: idPerfil,
         id_transacao: associacao.id_transacao,
         id_funcao: associacao.id_funcao
@@ -338,6 +350,62 @@ async function associarTransacoesFuncoes(idPerfil, dadosAssociacaoTransacaoFunca
     }
 }
 
+async function checarSePerfilExiste(perfilId) {
+
+    try {
+        const response = await fetch(`http://localhost:3000/profiles`);
+        if (!response.ok) {
+            throw new Error('Falha na requisição: ' + response.statusText);
+        }
+        const data = await response.json();
+        const profiles = data.profiles;
+
+        let profileExists = false;
+        let idProfile = null;
+
+        for (let profile of profiles) {
+            if (String(perfilId) === String(profile.id_perfil)) {
+                profileExists = true;
+                idProfile = profile.id_perfil;
+                break;
+            }
+        }
+        return { exists: profileExists, id: idProfile };
+    } catch (error) {
+        console.error('Erro ao verificar associação:', error);
+        alert('Erro ao verificar associação');
+    }
+}
+
+async function checkAssociationTransacoesFuncoes(dadosAssociacao) {
+
+    try {
+        const response = await fetch(`http://localhost:3000/profileFunctionAssociationsList`);
+        if (!response.ok) {
+            throw new Error('Falha na requisição: ' + response.statusText);
+        }
+        const data = await response.json();
+        const associations = data.associations;
+
+        let associationExists = false;
+        let associationId = null;
+
+        for (let linha of dadosAssociacao) {
+            for (let association of associations) {
+                if (String(linha.id_perfil) === String(association.id_perfil) && String(linha.id_transacao) === String(association.id_transacao) && String(linha.id_funcao) === String(association.id_funcao)) {
+                    associationExists = true;
+                    associationId = association.id_associacao;
+                    break;
+                }
+            }
+        }
+
+        return { exists: associationExists, id: associationId };
+    } catch (error) {
+        console.error('Erro ao verificar associação:', error);
+        alert('Erro ao verificar associação');
+    }
+}
 
 // Event listener para o botão cancelar
 document.getElementById('btn-cancelar').addEventListener('click', function () {
