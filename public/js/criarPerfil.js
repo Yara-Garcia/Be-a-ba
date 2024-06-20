@@ -230,7 +230,7 @@ document.getElementById('btn-salvar-modal').addEventListener('click', function (
     });
 
     if (transactionId) {
-        salvarFuncoesModal(transactionId); // Chama salvarFuncoesModal com transactionId
+        salvarFuncoesModal(transactionId);
         fecharModal(event);
     } else {
         alert('Selecione uma transação antes de salvar as funções!');
@@ -243,7 +243,6 @@ function fecharModal(event) {
 }
 
 
-// Função para criar um perfil
 async function criarPerfil() {
     const nomePerfil = document.getElementById('nome-perfil').value;
     const descricao = document.getElementById('descricao').value;
@@ -310,12 +309,10 @@ async function associarModulos(idPerfil) {
         }
     } catch (error) {
         console.error('Erro:', error);
-        throw error; // Lançar novamente o erro para que o bloco catch no botão salvar possa capturá-lo
+        throw error;
     }
 }
 
-
-// Função para associar transações e funções ao perfil
 async function associarTransacoesFuncoes(associacoesPreSalvas) {
 
     associacoesPreSalvas.forEach(associacao => {
@@ -392,8 +389,6 @@ document.getElementById('btn-salvar').addEventListener('click', async function (
     }
 });
 
-
-// Event listener para o botão cancelar
 document.getElementById('btn-cancelar').addEventListener('click', function () {
     associacoesPreSalvas = [];
     window.location.href = '../html/gestaoPerfis.html';

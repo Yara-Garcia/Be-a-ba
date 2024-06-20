@@ -1,4 +1,4 @@
-//import { confirmarExclusaoPerfil } from "./deletarPerfil.js";
+import { confirmarExclusaoPerfil } from "./deletarPerfil.js";
 
 fetch('http://localhost:3000/profiles', {
     method: 'GET'
@@ -42,6 +42,7 @@ fetch('http://localhost:3000/profiles', {
                 const deletarIcon = criarSvgIcone('deletar', 'gestaoPerfis.html');
                 deletarIcon.setAttribute('profile-id', profile.id_perfil);
 
+                //deletar perfil
                 deletarIcon.addEventListener('click', function (event) {
                     event.preventDefault();
                     const modal = new bootstrap.Modal(document.getElementById('confirmarExclusaoModal'));
