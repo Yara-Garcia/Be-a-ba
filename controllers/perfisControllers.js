@@ -85,6 +85,23 @@ const deleteProfile = async (req, res) => {
     }
 }
 
+const getProfileInfos = async (req, res) => {
+
+    const { id_perfil } = req.params;
+    try {
+        const profile = await Perfil.findOne({ where: { id_perfil: id_perfil } });
+
+        if (profile === null) {
+            return res.status(400).json({ success: false, message: 'Perfil não encontrado para o ID informado!' });
+        }
+
+        return res.status(200).json({ success: true, profile });
+    } catch (erro) {
+        console.log(erro.message)
+        return res.status(500).json({ success: false, mensagem: 'Erro interno do servidor.' });
+    }
+};
+
 const showProfiles = async (req, res) => {
     try {
         const profiles = await Perfil.findAll();
@@ -99,5 +116,6 @@ module.exports = {
     createProfile,
     updateProfile,
     deleteProfile,
+    getProfileInfos,
     showProfiles
 }

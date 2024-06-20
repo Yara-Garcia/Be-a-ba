@@ -6,7 +6,7 @@ const { createUser, updateUser, deleteUser, showUsers, getUserInfos } = require(
 const login = require('./controllers/login');
 const authenticateUser = require('./middlewares/authetication');
 const { createModule, updateModule, deleteModule, showModules, getModuleInfos } = require('./controllers/modulosController');
-const { createProfile, updateProfile, deleteProfile, showProfiles } = require('./controllers/perfisControllers');
+const { createProfile, updateProfile, deleteProfile, showProfiles, getProfileInfos } = require('./controllers/perfisControllers');
 const { createTransaction, updateTransaction, deleteTransaction, getTransactionInfos, showTransactions } = require('./controllers/transacoesController');
 const { createFunction, updateFunction, deleteFunction, getFunctionInfos, showFunctions } = require('./controllers/funcoesController');
 const { moduleTransactionAssociation, showAssociations, deleteModuleTransactionAssociation } = require('./controllers/modulosTransacoesAssociacao');
@@ -52,6 +52,7 @@ app.get('/users', showUsers);
 app.post('/profile', createProfile);
 app.put('/profile/:id_perfil', updateProfile);
 app.delete('/profile/:id_perfil', deleteProfile);
+app.get('/profile/:id_perfil', getProfileInfos);
 app.get('/profiles', showProfiles);
 app.post('/module', createModule);
 app.put('/module/:id_modulo', updateModule);
