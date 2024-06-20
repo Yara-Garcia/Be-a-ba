@@ -1,4 +1,6 @@
 const Perfil = require("../models/perfis");
+const Modulo = require("../models/modulos");
+const Transacao = require("../models/transacoes");
 const { Op } = require('sequelize');
 
 
@@ -89,7 +91,17 @@ const getProfileInfos = async (req, res) => {
 
     const { id_perfil } = req.params;
     try {
-        const profile = await Perfil.findOne({ where: { id_perfil: id_perfil } });
+        const profile = await Perfil.findOne({
+            where: {
+                id_perfil: id_perfil
+            },
+            include: [
+                { model: Modulo },
+                { model: Transacao }
+            ]
+        });
+
+        console.log(profile)
 
         if (profile === null) {
             return res.status(400).json({ success: false, message: 'Perfil não encontrado para o ID informado!' });
