@@ -22,8 +22,8 @@ async function carregarInformacoesPerfil(perfilId) {
         document.getElementById('nome-perfil').value = profileData.nome_perfil;
         document.getElementById('descricao').value = profileData.descricao;
 
-        await carregarModulos(profileData);
-        await carregarTransacoes(profileData);
+        await carregarModulosAssociados(profileData);
+        await carregarTransacoesAssociadas(profileData);
     }
 
     catch (error) {
@@ -32,7 +32,7 @@ async function carregarInformacoesPerfil(perfilId) {
     }
 }
 
-async function carregarModulos(profileData) {
+async function carregarModulosAssociados(profileData) {
     const dropdownContent = document.querySelector('#dropdownModulesContent');
     dropdownContent.innerHTML = '';
 
@@ -68,7 +68,7 @@ async function carregarModulos(profileData) {
     })
 }
 
-async function carregarTransacoes(profileData) {
+async function carregarTransacoesAssociadas(profileData) {
     const dropdownContent = document.querySelector('#transactionsDropdownContent');
     dropdownContent.innerHTML = '';
 
@@ -100,10 +100,16 @@ async function carregarTransacoes(profileData) {
         label.appendChild(document.createTextNode(transaction.nome_transacao));
         dropdownContent.appendChild(label);
         dropdownContent.appendChild(document.createElement('br'));
+
+        /*checkbox.addEventListener('change', async function () {
+            if (this.checked) {
+                await carregarFuncoesAssociadas(transaction.id_transacao, profileData);
+            }
+        });*/
     })
 }
 
-async function carregarFuncoes() {
+async function carregarFuncoesAssociadas() {
     const dropdownContent = document.querySelector('.modal-content');
     dropdownContent.innerHTML = '';
 
@@ -145,4 +151,317 @@ if (perfilId) {
     carregarInformacoesPerfil(perfilId);
 }
 
-//falta definir como editar as funções e fazer lógica pra novas associações e desassociações 
+let associacoesPreSalvas = [];
+let moduloId = null;
+let transacaoId = null;
+let funcaoId = null;
+
+async function salvarFuncoesModal(transacaoId) {
+    try {
+        const modulosParaAssociacaoTransacaoFuncao = Array.from(document.querySelectorAll('.modal-content input[type="checkbox"]:checked'))
+            .map(input => ({
+                id_transacao: transacaoId,
+                id_funcao: input.value
+            }));
+
+        // Limpar e adicionar novas associações temporariamente
+        associacoesPreSalvas = [];
+        associacoesPreSalvas.push(...modulosParaAssociacaoTransacaoFuncao);
+
+        alert('Funções selecionadas salvas temporariamente!');
+        $('#functionsModal').modal('hide');
+    } catch (error) {
+        console.error('Erro:', error);
+        alert('Falha ao salvar associações: ' + error.message);
+    }
+}
+
+//---------------------------------
+
+// Função para verificar se a associação de perfil e modulo já existe
+async function checarAssociacaoPerfilModulo(perfilId, moduloId) {
+    try {
+        const response = await fetch(`http://localhost:3000/profileModuleAssociationsList`);
+        if (!response.ok) {
+            throw new Error('Falha na requisição: ' + response.statusText);
+        }
+        const data = await response.json();
+        const associations = data.associations;
+
+
+        let associationExists = false;
+        let associationId = null;
+
+        for (let association of associations) {
+            if (String(perfilId) === String(association.id_perfil) && String(moduloId) === String(association.id_modulo)) {
+                associationExists = true;
+                associationId = association.id_associacao;
+                break;
+            }
+        }
+        return { exists: associationExists, id: associationId };
+    } catch (error) {
+        console.error('Erro ao verificar associação:', error);
+        alert('Erro ao verificar associação');
+    }
+}
+
+async function checarAssociacaoPerfilTransacaoFuncao(perfilId, transacaoId, funcaoId) {
+    try {
+        const response = await fetch(`http://localhost:3000/profileFunctionAssociationsList`);
+        if (!response.ok) {
+            throw new Error('Falha na requisição: ' + response.statusText);
+        }
+        const data = await response.json();
+        const associations = data.associations;
+
+        let associationExists = false;
+        let associationId = null;
+
+        for (let association of associations) {
+            if (String(perfilId) === String(association.id_perfil) && String(transacaoId) === String(association.id_transacao) && String(funcaoId) === String(association.id_funcao)) {
+                associationExists = true;
+                associationId = association.id_associacao;
+                break;
+            }
+        }
+        return { exists: associationExists, id: associationId };
+    } catch (error) {
+        console.error('Erro ao verificar associação:', error);
+        alert('Erro ao verificar associação');
+    }
+}
+
+document.getElementById('btn-cancelar').addEventListener('click', function () {
+    window.location.href = '../html/gestaoPerfis.html';
+});
+
+// Função para associar os módulos à perfil
+async function associarModulos(modulosParaAssociacao) {
+    try {
+        const response = await fetch('http://localhost:3000/profileModuleAssociation', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(modulosParaAssociacao)
+        });
+
+        if (!response.ok) {
+            throw new Error('Falha na requisição: ' + response.statusText);
+        }
+
+        const data = await response.json();
+
+        if (data.success) {
+            console.log('Módulos associados com sucesso!');
+        } else {
+            throw new Error('Erro ao associar módulos: ' + data.message);
+        }
+    } catch (error) {
+        console.error('Erro:', error);
+        alert('Falha ao associar módulos: ' + error.message);
+    }
+}
+
+// Função para desassociar os módulos da transação
+async function desassociarModulos(associationId) {
+    try {
+        const response = await fetch(`http://localhost:3000/deleteProfileModuleAssociation/${associationId}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error('Falha na requisição: ' + response.statusText);
+        }
+
+        const data = await response.json();
+
+        if (data.success) {
+            console.log('Módulos desassociados com sucesso!');
+        } else {
+            throw new Error('Erro ao desassociar módulos: ' + data.message);
+        }
+    } catch (error) {
+        console.error('Erro:', error);
+        alert('Falha ao desassociar módulos: ' + error.message);
+    }
+}
+
+
+async function associarTransacoesEFuncoes(dadosParaAssociacao) {
+    try {
+        const response = await fetch('http://localhost:3000/profileFunctionAssociation', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(dadosParaAssociacao)
+        });
+
+        if (!response.ok) {
+            throw new Error('Falha na requisição: ' + response.statusText);
+        }
+
+        const data = await response.json();
+
+        if (data.success) {
+            console.log('Transações e funções associadas com sucesso!');
+        } else {
+            throw new Error('Erro ao associar: ' + data.message);
+        }
+    } catch (error) {
+        console.error('Erro:', error);
+        alert('Falha ao associar: ' + error.message);
+    }
+}
+
+// Função para desassociar os módulos da transação
+async function desassociarTransacoesEPerfis(associationId) {
+    try {
+        const response = await fetch(`http://localhost:3000/deleteProfileFunctionAssociation/${associationId}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error('Falha na requisição: ' + response.statusText);
+        }
+
+        const data = await response.json();
+
+        if (data.success) {
+            console.log('Desassociações realizadas com sucesso!');
+        } else {
+            throw new Error('Erro ao desassociar transações e/ou funções: ' + data.message);
+        }
+    } catch (error) {
+        console.error('Erro:', error);
+        alert('Falha ao desassociar transações e/ou funções: ' + error.message);
+    }
+}
+
+document.getElementById('btn-salvar').addEventListener('click', async function (event) {
+    event.preventDefault();
+    const nomePerfil = document.getElementById('nome-perfil').value;
+    const descricao = document.getElementById('descricao').value;
+
+    const dadosPerfil = {
+        nome_perfil: nomePerfil,
+        descricao: descricao
+    };
+
+    fetch(`http://localhost:3000/profile/${perfilId}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(dadosPerfil)
+    })
+        .then(response => {
+            if (!response.ok) {
+                const error = response.statusText;
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                alert('Edição de perfil realizada com sucesso!');
+
+            } else {
+                console.log('Data:', data.message)
+                alert('Falha na edição: ' + data.message);
+            }
+        })
+
+    try {
+        const checkboxes = document.querySelectorAll('#dropdownModulesContent input[type="checkbox"]');
+        const modulosParaAssociacao = [];
+        const modulosParaDesassociacao = [];
+
+        for (let checkbox of checkboxes) {
+            const moduloId = checkbox.value;
+
+            // Verificar se a associação já existe antes de criar uma nova
+            const { exists: associationExists, id: associationId } = await checarAssociacaoPerfilModulo(perfilId, moduloId);
+
+            if (checkbox.checked) {
+                if (!associationExists) {
+                    modulosParaAssociacao.push({
+                        id_perfil: perfilId,
+                        id_modulo: moduloId
+                    });
+                }
+            } else {
+                if (associationExists) {
+                    modulosParaDesassociacao.push(associationId);
+                }
+            }
+        }
+        // Se houver novas associações a serem feitas
+        if (modulosParaAssociacao.length > 0) {
+            await associarModulos(modulosParaAssociacao);
+        }
+
+        // Se houver associações a serem desfeitas
+        if (modulosParaDesassociacao.length > 0) {
+            for (let associationId of modulosParaDesassociacao) {
+                await desassociarModulos(associationId);
+            }
+        }
+    } catch (error) {
+        console.error('Erro:', error);
+        alert('Falha na edição do módulo: ' + error.message);
+    }
+
+    //alteração de transações e funções
+    try {
+        const checkboxes = document.querySelectorAll('#transactionsDropdownContent input[type="checkbox"]');
+        const dadosParaAssociacao = [];
+        const dadosParaDesassociacao = [];
+
+        for (let checkbox of checkboxes) {
+            const transacaoId = checkbox.value;
+
+            // Verificar se a associação já existe antes de criar uma nova
+            const { exists: associationExists, id: associationId } = await checarAssociacaoPerfilTransacaoFuncao(perfilId, transacaoId, funcaoId);
+
+            if (checkbox.checked) {
+                if (!associationExists) {
+                    dadosParaAssociacao.push({
+                        id_perfil: perfilId,
+                        id_transacao: transacaoId,
+                        id_funcao: funcaoId
+                    });
+                }
+            } else {
+                if (associationExists) {
+                    dadosParaAssociacao.push(associationId);
+                }
+            }
+        }
+        // Se houver novas associações a serem feitas
+        if (dadosParaAssociacao.length > 0) {
+            await associarTransacoesEFuncoes(dadosParaAssociacao);
+        }
+
+        // Se houver associações a serem desfeitas
+        if (dadosParaDesassociacao.length > 0) {
+            for (let associationId of dadosParaDesassociacao) {
+                await desassociarTransacoesEPerfis(associationId);
+            }
+        }
+    } catch (error) {
+        console.error('Erro:', error);
+        alert('Falha na edição do perfil: ' + error.message);
+    }
+
+    window.location.href = '../html/gestaoPerfis.html';
+});
+
+
