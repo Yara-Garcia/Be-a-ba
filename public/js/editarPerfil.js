@@ -132,19 +132,21 @@ async function carregarFuncoesAssociadas(transacaoId, profileData) {
             checkbox.value = func.id_funcao;
             checkbox.textContent = func.nome_funcao;
 
-            const isFunctionAssociated = profileData.Transacaos.some(transacao =>
-                transacao.PerfilFuncao.id_funcao.toString() === func.id_funcao.toString() &&
-                transacao.PerfilFuncao.id_transacao.toString() === transacaoId.toString()
-            );
-            console.log(profileData.Transacaos)
-            console.log(func.id_funcao)
-            console.log(transacaoId)
-
+            const isFunctionAssociated = profileData.Transacaos.some(transacao => {
+                if (transacao.id_transacao.toString() === transacaoId.toString()) {
+                    return transacao.Funcaos.some(funcao => {
+                        return (
+                            funcao.id_funcao.toString() === func.id_funcao.toString() &&
+                            funcao.PerfilFuncao.id_transacao.toString() === transacaoId.toString()
+                        );
+                    });
+                }
+                return false; // Caso a transação específica não seja encontrada
+            });
 
             if (isFunctionAssociated) {
                 checkbox.checked = true;
             }
-            console.log(isFunctionAssociated)
 
             const space = document.createTextNode(' ');
             // Adicionar o checkbox ao modalBody
@@ -173,7 +175,6 @@ async function abrirModalDeFuncoes(transactionId, profileData) {
     // Carrega as funções associadas dentro do modal
     await carregarFuncoesAssociadas(transactionId, profileData);
 
-    // Mostra o modal após carregar as funções
     $('#functionsModal').modal('show');
 
     // Adicionar evento de change aos checkboxes de função dentro do modal
@@ -183,7 +184,6 @@ async function abrirModalDeFuncoes(transactionId, profileData) {
             const isChecked = this.checked;
 
             if (isChecked) {
-                // Adiciona a função à lista de funções selecionadas
                 funcoesSelecionadas.push({ id_transacao: transactionId, id_funcao: funcaoId });
             } else {
                 // Remove a função da lista de funções selecionadas, se já estiver lá
@@ -206,14 +206,11 @@ async function abrirModalDeFuncoes(transactionId, profileData) {
     });
 }
 
-
-
-
 function fecharModal(event) {
     event.preventDefault();
     $('#functionsModal').modal('hide');
 }
-// Seção para carregar informações da transação ao carregar a página
+
 const url = new URL(window.location.href);
 const perfilId = url.searchParams.get('id_perfil');
 if (perfilId) {
@@ -226,22 +223,24 @@ let transacaoId = null;
 
 async function salvarFuncoesModal(transacaoId) {
     try {
+        // Obter os checkboxes marcados atualmente
+        const checkboxesMarcados = document.querySelectorAll('#functionsModal .modal-body input[type="checkbox"]:checked');
 
-        const dadosAssociacaoTransacaoFuncao = Array.from(document.querySelectorAll('#functionsModal .modal-body input[type="checkbox"]:checked'))
-            .map(input => ({
-                id_transacao: transacaoId,
-                id_funcao: input.value
-            }));
+        // Mapear os checkboxes marcados para objetos { id_transacao, id_funcao }
+        const novasAssociacoes = Array.from(checkboxesMarcados).map(input => ({
+            id_transacao: transacaoId,
+            id_funcao: input.value
+        }));
 
-        dadosAssociacaoTransacaoFuncao.forEach(associacao => {
-            associacoesPreSalvas.push(associacao);
-        });
+        // Atualizar o array de associações pré-salvas com as novas associações
+        associacoesPreSalvas = associacoesPreSalvas.concat(novasAssociacoes);
 
+        // Atualizar o perfilId nas associações pré-salvas (opcional, se necessário)
         associacoesPreSalvas.forEach(associacao => {
             associacao.id_perfil = perfilId;
-        })
-        console.log(associacoesPreSalvas)
+        });
 
+        // Mostrar alerta de sucesso
         alert('Funções selecionadas salvas temporariamente!');
         $('#functionsModal').modal('hide');
     } catch (error) {
@@ -326,9 +325,10 @@ async function checarAssociacaoPerfilTransacaoFuncao(perfilId, associacoesPreSal
 
             // Se encontrou uma correspondência, define exists como true e associationId como o ID da associação
             if (found) {
+                console.log(found)
                 associationExists = true;
                 associationId = found.id_associacao;
-                break; // Para o loop, pois já encontrou a associação
+                break;
             }
         }
 
@@ -338,12 +338,6 @@ async function checarAssociacaoPerfilTransacaoFuncao(perfilId, associacoesPreSal
         alert('Erro ao verificar associação');
     }
 }
-
-
-
-document.getElementById('btn-cancelar').addEventListener('click', function () {
-    window.location.href = '../html/gestaoPerfis.html';
-});
 
 // Função para associar os módulos à perfil
 async function associarModulos(modulosParaAssociacao) {
@@ -457,6 +451,10 @@ async function desassociarTransacoesEPerfis(associationId) {
     }
 }
 
+document.getElementById('btn-cancelar').addEventListener('click', function () {
+    window.location.href = '../html/gestaoPerfis.html';
+});
+
 document.getElementById('btn-salvar').addEventListener('click', async function (event) {
     event.preventDefault();
     const nomePerfil = document.getElementById('nome-perfil').value;
@@ -567,7 +565,8 @@ document.getElementById('btn-salvar').addEventListener('click', async function (
             console.log(dadosParaAssociacao)
             await associarTransacoesEFuncoes(dadosParaAssociacao);
         }
-
+        console.log(dadosParaAssociacao)
+        console.log(dadosParaDesassociacao)
         // Se houver associações a serem desfeitas
         if (dadosParaDesassociacao.length > 0) {
             for (let associationId of dadosParaDesassociacao) {

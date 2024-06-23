@@ -1,6 +1,8 @@
 const Perfil = require("../models/perfis");
 const Modulo = require("../models/modulos");
 const Transacao = require("../models/transacoes");
+const Funcao = require('../models/funcoes');
+const PerfilFuncao = require('../models/perfilFuncao');
 const { Op } = require('sequelize');
 
 
@@ -97,11 +99,12 @@ const getProfileInfos = async (req, res) => {
             },
             include: [
                 { model: Modulo },
-                { model: Transacao }
+                {
+                    model: Transacao,
+                    include: [{ model: Funcao }] // Carrega todas as funções associadas a cada transação
+                }
             ]
         });
-
-        console.log(profile)
 
         if (profile === null) {
             return res.status(400).json({ success: false, message: 'Perfil não encontrado para o ID informado!' });
