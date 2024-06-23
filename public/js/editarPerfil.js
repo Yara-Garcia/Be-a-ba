@@ -194,10 +194,9 @@ async function abrirModalDeFuncoes(transactionId, profileData) {
         });
     });
 
-    // Marcar os checkboxes das funções já associadas a essa transação
-    profileData.Transacaos.forEach(assoc => {
-        if (assoc.PerfilFuncao.id_transacao === transactionId) {
-            const checkbox = modalBody.querySelector(`.function-checkbox[value="${assoc.PerfilFuncao.id_funcao}"]`);
+    profileData.Transacaos.some(transacao => {
+        if (transacao.Funcaos.id_transacao === transactionId) {
+            const checkbox = modalBody.querySelector(`.function-checkbox[value="${transacao.Funcaos.id_funcao}"]`);
             console.log(checkbox)
             if (checkbox) {
                 checkbox.checked = true;
@@ -243,6 +242,8 @@ async function salvarFuncoesModal(transacaoId) {
         // Mostrar alerta de sucesso
         alert('Funções selecionadas salvas temporariamente!');
         $('#functionsModal').modal('hide');
+
+
     } catch (error) {
         console.error('Erro:', error);
         alert('Falha ao salvar funções: ' + error.message);
@@ -298,9 +299,6 @@ async function checarAssociacaoPerfilModulo(perfilId, moduloId) {
 async function checarAssociacaoPerfilTransacaoFuncao(perfilId, associacoesPreSalvas) {
     console.log(associacoesPreSalvas)
     try {
-        if (!Array.isArray(associacoesPreSalvas) || associacoesPreSalvas.length === 0) {
-            throw new Error('Associações pré-salvas inválidas ou vazias.');
-        }
 
         const response = await fetch(`http://localhost:3000/profileFunctionAssociationsList`);
         if (!response.ok) {
@@ -581,7 +579,3 @@ document.getElementById('btn-salvar').addEventListener('click', async function (
 })
 
 //window.location.href = '../html/gestaoPerfis.html';*/
-
-
-
-
