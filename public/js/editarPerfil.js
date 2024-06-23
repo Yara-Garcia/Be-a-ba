@@ -518,8 +518,8 @@ document.getElementById('btn-salvar').addEventListener('click', async function (
 
     try {
         const checkboxes = document.querySelectorAll('#transactionsDropdownContent input[type="checkbox"]');
-        const dadosParaAssociacao = [];
-        const dadosParaDesassociacao = [];
+        let dadosParaAssociacao = [];
+        let dadosParaDesassociacao = [];
 
         // Itera sobre cada checkbox usando for...of para poder usar await corretamente
         for (let checkbox of checkboxes) {
@@ -528,16 +528,19 @@ document.getElementById('btn-salvar').addEventListener('click', async function (
             // Verifica a associação para o perfil, transação e função atuais
             const { exists: associationExists, id: associationId } = await checarAssociacaoPerfilTransacaoFuncao(perfilId, associacoesPreSalvas);
 
-            console.log(associacoesPreSalvas); // Verifica se associacoesPreSalvas está disponível aqui conforme necessário
 
             if (checkbox.checked) {
                 if (!associationExists) {
-                    // Adiciona a associação ao array para associação
-                    dadosParaAssociacao.push({
-                        id_perfil: perfilId,
-                        id_transacao: transacaoId,
-                        id_funcao: funcaoId
-                    });
+                    dadosParaAssociacao = [];
+                    for (associacao of associacoesPreSalvas) {
+                        dadosParaAssociacao.push({
+                            id_perfil: perfilId,
+                            id_transacao: associacao.id_transacao,
+                            id_funcao: associacao.id_funcao
+                        });
+                        console.log(dadosParaAssociacao)
+                    }
+
                 }
             } else {
                 if (associationExists) {
@@ -546,8 +549,6 @@ document.getElementById('btn-salvar').addEventListener('click', async function (
                 }
             }
         }
-
-
         // Se houver novas associações a serem feitas
         if (dadosParaAssociacao.length > 0) {
             console.log(dadosParaAssociacao)
