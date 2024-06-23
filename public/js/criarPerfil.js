@@ -74,7 +74,6 @@ function buscarModulos() {
 
 // Função para buscar transações associadas aos módulos selecionados
 function buscarTransacoesAssociadas(selectedModules) {
-    console.log(selectedModules);
     fetch('http://localhost:3000/moduleTransactionAssociationsList')
         .then(response => {
             if (!response.ok) {
@@ -318,7 +317,6 @@ async function associarTransacoesFuncoes(associacoesPreSalvas) {
     associacoesPreSalvas.forEach(associacao => {
         associacao.id_perfil = perfilId;
     });
-    console.log(associacoesPreSalvas)
 
     try {
         const response = await fetch('http://localhost:3000/profileFunctionAssociation', {
