@@ -132,14 +132,19 @@ async function carregarFuncoesAssociadas(transacaoId, profileData) {
             checkbox.value = func.id_funcao;
             checkbox.textContent = func.nome_funcao;
 
-            const isFunctionAssociated = Object.keys(profileData.Transacaos).some(key =>
-                profileData.Transacaos[key].id_funcao === func.id_funcao &&
-                profileData.Transacaos[key].id_transacao === transacaoId
+            const isFunctionAssociated = profileData.Transacaos.some(transacao =>
+                transacao.PerfilFuncao.id_funcao.toString() === func.id_funcao.toString() &&
+                transacao.PerfilFuncao.id_transacao.toString() === transacaoId.toString()
             );
-            console.log(isFunctionAssociated)
+            console.log(profileData.Transacaos)
+            console.log(func.id_funcao)
+            console.log(transacaoId)
+
+
             if (isFunctionAssociated) {
                 checkbox.checked = true;
             }
+            console.log(isFunctionAssociated)
 
             const space = document.createTextNode(' ');
             // Adicionar o checkbox ao modalBody
@@ -171,15 +176,11 @@ async function abrirModalDeFuncoes(transactionId, profileData) {
     // Mostra o modal após carregar as funções
     $('#functionsModal').modal('show');
 
-    document.getElementById('btn-fechar-modal').removeEventListener('click', fecharModal);
-    document.getElementById('btn-fechar-modal').addEventListener('click', fecharModal);
-
     // Adicionar evento de change aos checkboxes de função dentro do modal
     modalBody.querySelectorAll('.function-checkbox').forEach(checkbox => {
         checkbox.addEventListener('change', function () {
             const funcaoId = this.value;
             const isChecked = this.checked;
-            console.log(funcaoId)
 
             if (isChecked) {
                 // Adiciona a função à lista de funções selecionadas
@@ -192,7 +193,19 @@ async function abrirModalDeFuncoes(transactionId, profileData) {
             }
         });
     });
+
+    // Marcar os checkboxes das funções já associadas a essa transação
+    profileData.Transacaos.forEach(assoc => {
+        if (assoc.PerfilFuncao.id_transacao === transactionId) {
+            const checkbox = modalBody.querySelector(`.function-checkbox[value="${assoc.PerfilFuncao.id_funcao}"]`);
+            console.log(checkbox)
+            if (checkbox) {
+                checkbox.checked = true;
+            }
+        }
+    });
 }
+
 
 
 
