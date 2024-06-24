@@ -1,7 +1,12 @@
 import { confirmarExclusaoPerfil } from "./deletarPerfil.js";
 
+const token = localStorage.getItem('token');
+
 fetch('http://localhost:3000/profiles', {
-    method: 'GET'
+    method: 'GET',
+    headers: {
+        'Authorization': 'Bearer ' + token
+    }
 })
     .then(response => {
         if (!response.ok) {

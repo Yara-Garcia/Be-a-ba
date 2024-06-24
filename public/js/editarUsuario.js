@@ -1,7 +1,11 @@
+const token = localStorage.getItem('token');
+
 function carregarInformacoesUsuario(userId) {
     fetch(`http://localhost:3000/user/${userId}`, {
-        method: 'GET'
-
+        method: 'GET',
+        headers: {
+            'Authorization': 'Bearer ' + token
+        }
     })
         .then(response => {
             if (!response.ok) {
@@ -24,7 +28,10 @@ function carregarInformacoesUsuario(userId) {
             document.getElementById('associar-perfil').value = userData.id_perfil;
 
             fetch('http://localhost:3000/profiles', {
-                method: 'GET'
+                method: 'GET',
+                headers: {
+                    'Authorization': 'Bearer ' + token
+                }
             })
                 .then(response => {
                     if (!response.ok) {
@@ -101,6 +108,7 @@ document.getElementById('form-container').addEventListener('submit', function (e
     fetch(`http://localhost:3000/user/${userId}`, {
         method: 'PUT',
         headers: {
+            'Authorization': 'Bearer ' + token,
             'Content-Type': 'application/json'
         },
         body: JSON.stringify(dadosUsuario)

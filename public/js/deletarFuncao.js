@@ -1,7 +1,12 @@
+const token = localStorage.getItem('token');
+
 export function confirmarExclusaoFuncao(functionId) {
     document.getElementById('confirmarExclusaoBtn').addEventListener('click', function () {
         fetch(`http://localhost:3000/function/${functionId}`, {
-            method: 'DELETE'
+            method: 'DELETE',
+            headers: {
+                'Authorization': 'Bearer ' + token
+            }
         })
             .then(response => {
                 if (!response.ok) {

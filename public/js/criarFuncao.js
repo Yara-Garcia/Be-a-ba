@@ -1,3 +1,5 @@
+const token = localStorage.getItem('token');
+
 document.getElementById('btn-cancelar').addEventListener('click', function () {
     window.location.href = '../html/gestaoFuncoes.html';
 });
@@ -16,6 +18,7 @@ document.getElementById('form-container').addEventListener('submit', function (e
     fetch('http://localhost:3000/function', {
         method: 'POST',
         headers: {
+            'Authorization': 'Bearer ' + token,
             'Content-Type': 'application/json'
         },
         body: JSON.stringify(dadosFuncao)

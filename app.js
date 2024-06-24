@@ -12,7 +12,6 @@ const { createFunction, updateFunction, deleteFunction, getFunctionInfos, showFu
 const { moduleTransactionAssociation, showAssociations, deleteModuleTransactionAssociation } = require('./controllers/modulosTransacoesAssociacao');
 const { profileFunctionAssociation, deleteProfileFunctionAssociation, getFunctionAssociations } = require('./controllers/perfisFuncoesAssociacao');
 const { profileModuleAssociation, deleteProfileModuleAssociation, getProfileModuleAssociations } = require('./controllers/perfilModulosAssociacao');
-//const { profileTransactionAssociation, deleteProfileTransactionAssociation, getProfileTransactionAssociations } = require('./controllers/perfilTransacoesAssociacao');
 
 const app = express();
 const PORT = 3000;
@@ -42,8 +41,11 @@ app.listen(PORT, () => {
     console.log(`Servidor rodando na porta ${PORT}`);
 });
 
-//app.use(authenticateUser);
+
 app.post('/login', login);
+
+app.use(authenticateUser);
+
 app.post('/user', createUser);
 app.put('/user/:id_usuario', updateUser);
 app.delete('/user/:id_usuario', deleteUser);
@@ -80,7 +82,5 @@ app.get('/profileFunctionAssociationsList', getFunctionAssociations);
 app.post('/profileModuleAssociation', profileModuleAssociation);
 app.delete('/deleteProfileModuleAssociation/:id_associacao', deleteProfileModuleAssociation);
 app.get('/profileModuleAssociationsList', getProfileModuleAssociations);
-/*app.post('/profileTransactionAssociation', profileTransactionAssociation);
-app.delete('/deleteProfileTransactionAssociation/:id_associacao', deleteProfileTransactionAssociation);
-app.get('/profileTransactionAssociationsList', getProfileTransactionAssociations);*/
+
 

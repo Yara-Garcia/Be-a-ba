@@ -1,3 +1,5 @@
+const token = localStorage.getItem('token');
+
 document.addEventListener('DOMContentLoaded', function () {
     // Adicionar evento de clique aos botões do dropdown para mostrar/ocultar o conteúdo
     document.querySelectorAll('.dropdown-btn').forEach(button => {
@@ -11,7 +13,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
 async function carregarInformacoesPerfil(perfilId) {
     try {
-        const response = await fetch(`http://localhost:3000/profile/${perfilId}`);
+        const response = await fetch(`http://localhost:3000/profile/${perfilId}`, {
+            method: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + token
+            }
+        });
         if (!response.ok) {
             throw new Error('Falha na requisição: ' + response.statusText);
         }
@@ -37,7 +44,12 @@ async function carregarModulosAssociados(profileData) {
     dropdownContent.innerHTML = '';
 
     // Carregar todos os módulos disponíveis
-    const modulesResponse = await fetch('http://localhost:3000/modules');
+    const modulesResponse = await fetch('http://localhost:3000/modules', {
+        method: 'GET',
+        headers: {
+            'Authorization': 'Bearer ' + token
+        }
+    });
     if (!modulesResponse.ok) {
         throw new Error('Falha na requisição dos módulos: ' + modulesResponse.statusText);
     }
@@ -72,7 +84,12 @@ async function carregarTransacoesAssociadas(profileData) {
     const dropdownContent = document.querySelector('#transactionsDropdownContent');
     dropdownContent.innerHTML = '';
 
-    const transactionsResponse = await fetch('http://localhost:3000/transactions');
+    const transactionsResponse = await fetch('http://localhost:3000/transactions', {
+        method: 'GET',
+        headers: {
+            'Authorization': 'Bearer ' + token
+        }
+    });
     if (!transactionsResponse.ok) {
         throw new Error('Falha na requisição das transações: ' + transactionsResponse.statusText);
     }
@@ -117,7 +134,12 @@ async function carregarFuncoesAssociadas(transacaoId, profileData) {
     modalBody.innerHTML = ''; // Limpa o conteúdo anterior do modal
 
     try {
-        const response = await fetch(`http://localhost:3000/functions`);
+        const response = await fetch(`http://localhost:3000/functions`, {
+            method: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + token
+            }
+        });
         if (!response.ok) {
             throw new Error('Falha na requisição das funções: ' + response.statusText);
         }
@@ -217,8 +239,9 @@ if (perfilId) {
 }
 
 let associacoesPreSalvas = [];
+console.log(associacoesPreSalvas)
 let moduloId = null;
-let transacaoId = null;
+
 
 async function salvarFuncoesModal(transacaoId) {
     try {
@@ -230,9 +253,11 @@ async function salvarFuncoesModal(transacaoId) {
             id_transacao: transacaoId,
             id_funcao: input.value
         }));
+        console.log(transacaoId)
 
         // Atualizar o array de associações pré-salvas com as novas associações
         associacoesPreSalvas = associacoesPreSalvas.concat(novasAssociacoes);
+        console.log(associacoesPreSalvas)
 
         // Atualizar o perfilId nas associações pré-salvas (opcional, se necessário)
         associacoesPreSalvas.forEach(associacao => {
@@ -252,12 +277,13 @@ async function salvarFuncoesModal(transacaoId) {
 
 document.getElementById('btn-salvar-modal').addEventListener('click', function (event) {
     event.preventDefault();
-    let transacaoId = null;
 
+    let transacaoId;
     // Encontra o checkbox de transação marcado
     document.querySelectorAll('.transaction-checkbox').forEach(input => {
         if (input.checked) {
             transacaoId = input.value;
+            console.log(transacaoId)
         }
     });
 
@@ -272,7 +298,12 @@ document.getElementById('btn-salvar-modal').addEventListener('click', function (
 // Função para verificar se a associação de perfil e modulo já existe
 async function checarAssociacaoPerfilModulo(perfilId, moduloId) {
     try {
-        const response = await fetch(`http://localhost:3000/profileModuleAssociationsList`);
+        const response = await fetch(`http://localhost:3000/profileModuleAssociationsList`, {
+            method: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + token
+            }
+        });
         if (!response.ok) {
             throw new Error('Falha na requisição: ' + response.statusText);
         }
@@ -300,7 +331,12 @@ async function checarAssociacaoPerfilTransacaoFuncao(perfilId, associacoesPreSal
     console.log(associacoesPreSalvas)
     try {
 
-        const response = await fetch(`http://localhost:3000/profileFunctionAssociationsList`);
+        const response = await fetch(`http://localhost:3000/profileFunctionAssociationsList`, {
+            method: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + token
+            }
+        });
         if (!response.ok) {
             throw new Error('Falha na requisição: ' + response.statusText);
         }
@@ -343,6 +379,7 @@ async function associarModulos(modulosParaAssociacao) {
         const response = await fetch('http://localhost:3000/profileModuleAssociation', {
             method: 'POST',
             headers: {
+                'Authorization': 'Bearer ' + token,
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(modulosParaAssociacao)
@@ -371,6 +408,7 @@ async function desassociarModulos(associationId) {
         const response = await fetch(`http://localhost:3000/deleteProfileModuleAssociation/${associationId}`, {
             method: 'DELETE',
             headers: {
+                'Authorization': 'Bearer ' + token,
                 'Content-Type': 'application/json'
             }
         });
@@ -400,6 +438,7 @@ async function associarTransacoesEFuncoes(associacoesPreSalvas) {
         const response = await fetch('http://localhost:3000/profileFunctionAssociation', {
             method: 'POST',
             headers: {
+                'Authorization': 'Bearer ' + token,
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(associacoesPreSalvas)
@@ -428,6 +467,7 @@ async function desassociarTransacoesEPerfis(associationId) {
         const response = await fetch(`http://localhost:3000/deleteProfileFunctionAssociation/${associationId}`, {
             method: 'DELETE',
             headers: {
+                'Authorization': 'Bearer ' + token,
                 'Content-Type': 'application/json'
             }
         });
@@ -466,6 +506,7 @@ document.getElementById('btn-salvar').addEventListener('click', async function (
     fetch(`http://localhost:3000/profile/${perfilId}`, {
         method: 'PUT',
         headers: {
+            'Authorization': 'Bearer ' + token,
             'Content-Type': 'application/json'
         },
         body: JSON.stringify(dadosPerfil)
@@ -571,11 +612,10 @@ document.getElementById('btn-salvar').addEventListener('click', async function (
                 await desassociarTransacoesEPerfis(associationId);
             }
         }
-
+        window.location.href = '../html/gestaoPerfis.html';
     } catch (error) {
         console.error('Erro:', error);
         alert('Falha na edição do perfil: ' + error.message);
     }
 })
 
-//window.location.href = '../html/gestaoPerfis.html';*/

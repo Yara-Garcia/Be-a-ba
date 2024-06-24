@@ -1,3 +1,5 @@
+const token = localStorage.getItem('token');
+
 document.querySelectorAll('.dropdown-btn').forEach(button => {
     button.addEventListener('click', function (event) {
         event.preventDefault();
@@ -33,7 +35,12 @@ window.addEventListener('click', function (event) {
 
 // Função para buscar e popular os módulos no dropdown de seleção de módulos
 function buscarModulos() {
-    fetch('http://localhost:3000/modules')
+    fetch('http://localhost:3000/modules', {
+        method: 'GET',
+        headers: {
+            'Authorization': 'Bearer ' + token
+        }
+    })
         .then(response => {
             if (!response.ok) {
                 throw new Error('Falha na requisição: ' + response.statusText);
@@ -74,7 +81,12 @@ function buscarModulos() {
 
 // Função para buscar transações associadas aos módulos selecionados
 function buscarTransacoesAssociadas(selectedModules) {
-    fetch('http://localhost:3000/moduleTransactionAssociationsList')
+    fetch('http://localhost:3000/moduleTransactionAssociationsList', {
+        method: 'GET',
+        headers: {
+            'Authorization': 'Bearer ' + token
+        }
+    })
         .then(response => {
             if (!response.ok) {
                 throw new Error('Falha na requisição: ' + response.statusText);
@@ -91,7 +103,12 @@ function buscarTransacoesAssociadas(selectedModules) {
                     }
                 });
 
-                fetch('http://localhost:3000/transactions')
+                fetch('http://localhost:3000/transactions', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': 'Bearer ' + token
+                    }
+                })
                     .then(response => {
                         if (!response.ok) {
                             throw new Error('Falha na requisição: ' + response.statusText);
@@ -155,7 +172,12 @@ function abrirModalDeFuncoes(transactionId) {
     const modalBody = document.querySelector('#functionsModal .modal-body');
     modalBody.innerHTML = ''; // Limpa o conteúdo anterior do modal
 
-    fetch('http://localhost:3000/functions')
+    fetch('http://localhost:3000/functions', {
+        method: 'GET',
+        headers: {
+            'Authorization': 'Bearer ' + token
+        }
+    })
         .then(response => {
             if (!response.ok) {
                 throw new Error('Falha na requisição: ' + response.statusText);
@@ -255,6 +277,7 @@ async function criarPerfil() {
         const responsePerfil = await fetch('http://localhost:3000/profile', {
             method: 'POST',
             headers: {
+                'Authorization': 'Bearer ' + token,
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(dadosPerfil)
@@ -292,6 +315,7 @@ async function associarModulos(idPerfil) {
         const response = await fetch('http://localhost:3000/profileModuleAssociation', {
             method: 'POST',
             headers: {
+                'Authorization': 'Bearer ' + token,
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(dadosAssociacao)
@@ -322,6 +346,7 @@ async function associarTransacoesFuncoes(associacoesPreSalvas) {
         const response = await fetch('http://localhost:3000/profileFunctionAssociation', {
             method: 'POST',
             headers: {
+                'Authorization': 'Bearer ' + token,
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(associacoesPreSalvas)
@@ -345,7 +370,12 @@ async function associarTransacoesFuncoes(associacoesPreSalvas) {
 async function checarSePerfilExiste(perfilId) {
 
     try {
-        const response = await fetch(`http://localhost:3000/profiles`);
+        const response = await fetch(`http://localhost:3000/profiles`, {
+            method: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + token
+            }
+        });
         if (!response.ok) {
             throw new Error('Falha na requisição: ' + response.statusText);
         }

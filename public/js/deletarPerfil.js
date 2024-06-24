@@ -1,7 +1,12 @@
+const token = localStorage.getItem('token');
+
 export function confirmarExclusaoPerfil(perfilId) {
     document.getElementById('confirmarExclusaoBtn').addEventListener('click', function () {
         fetch(`http://localhost:3000/profile/${perfilId}`, {
-            method: 'DELETE'
+            method: 'DELETE',
+            headers: {
+                'Authorization': 'Bearer ' + token
+            }
         })
             .then(response => {
                 if (!response.ok) {

@@ -1,3 +1,5 @@
+const token = localStorage.getItem('token');
+
 document.querySelectorAll('.dropdown-btn').forEach(button => {
     button.addEventListener('click', function (event) {
         event.preventDefault();
@@ -21,7 +23,10 @@ document.querySelectorAll('.dropdown-search').forEach(search => {
 });
 
 fetch('http://localhost:3000/modules', {
-    method: 'GET'
+    method: 'GET',
+    headers: {
+        'Authorization': 'Bearer ' + token
+    }
 })
     .then(response => {
         if (!response.ok) {
@@ -87,9 +92,10 @@ document.getElementById('btn-salvar').addEventListener('click', function (event)
         descricao: descricao
     }
 
-    fetch('http://localhost:3000/function', {
+    fetch('http://localhost:3000/transaction', {
         method: 'POST',
         headers: {
+            'Authorization': 'Bearer ' + token,
             'Content-Type': 'application/json'
         },
         body: JSON.stringify(dadosTransacao)
@@ -128,6 +134,7 @@ async function associarModulos(idTransacao) {
         const response = await fetch('http://localhost:3000/moduleTransactionAssociation', {
             method: 'POST',
             headers: {
+                'Authorization': 'Bearer ' + token,
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(dadosAssociacao)

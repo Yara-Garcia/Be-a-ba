@@ -1,3 +1,5 @@
+const token = localStorage.getItem('token');
+
 document.addEventListener('DOMContentLoaded', function () {
     // Adicionar evento de clique aos botões do dropdown para mostrar/ocultar o conteúdo
     document.querySelectorAll('.dropdown-btn').forEach(button => {
@@ -12,7 +14,12 @@ document.addEventListener('DOMContentLoaded', function () {
 // Função para carregar informações da transação e módulos associados
 async function carregarInformacoesTransacao(transactionId) {
     try {
-        const response = await fetch(`http://localhost:3000/transaction/${transactionId}`);
+        const response = await fetch(`http://localhost:3000/transaction/${transactionId}`, {
+            method: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + token
+            }
+        });
         if (!response.ok) {
             throw new Error('Falha na requisição: ' + response.statusText);
         }
@@ -26,7 +33,12 @@ async function carregarInformacoesTransacao(transactionId) {
         dropdownContent.innerHTML = '';
 
         // Carregar todos os módulos disponíveis
-        const modulesResponse = await fetch('http://localhost:3000/modules');
+        const modulesResponse = await fetch('http://localhost:3000/modules', {
+            method: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + token
+            }
+        });
         if (!modulesResponse.ok) {
             throw new Error('Falha na requisição dos módulos: ' + modulesResponse.statusText);
         }
@@ -73,7 +85,12 @@ if (transactionId) {
 // Função para verificar se a associação já existe
 async function checkAssociation(transactionId, moduleId) {
     try {
-        const response = await fetch(`http://localhost:3000/moduleTransactionAssociationsList`);
+        const response = await fetch(`http://localhost:3000/moduleTransactionAssociationsList`, {
+            method: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + token
+            }
+        });
         if (!response.ok) {
             throw new Error('Falha na requisição: ' + response.statusText);
         }
@@ -108,6 +125,7 @@ async function associarModulos(dadosAssociacao) {
         const response = await fetch('http://localhost:3000/moduleTransactionAssociation', {
             method: 'POST',
             headers: {
+                'Authorization': 'Bearer ' + token,
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(dadosAssociacao)
@@ -136,6 +154,7 @@ async function desassociarModulos(associationId) {
         const response = await fetch(`http://localhost:3000/deleteModuleTransactionAssociation/${associationId}`, {
             method: 'DELETE',
             headers: {
+                'Authorization': 'Bearer ' + token,
                 'Content-Type': 'application/json'
             }
         });
@@ -170,6 +189,7 @@ document.getElementById('btn-salvar').addEventListener('click', async function (
     fetch(`http://localhost:3000/transaction/${transactionId}`, {
         method: 'PUT',
         headers: {
+            'Authorization': 'Bearer ' + token,
             'Content-Type': 'application/json'
         },
         body: JSON.stringify(dadosTransacao)

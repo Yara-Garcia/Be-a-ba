@@ -19,6 +19,7 @@ document.getElementById('login-container').addEventListener('submit', function (
         .then(response => response.json())
         .then(data => {
             if (data.success) {
+                localStorage.setItem('token', data.token);
                 window.location.href = '../html/gestaoUsuarios.html';
             } else {
                 alert('Login falhou: ' + data.message);

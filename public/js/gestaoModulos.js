@@ -1,7 +1,12 @@
 import { confirmarExclusaoModulo } from "./deletarModulo.js";
 
+const token = localStorage.getItem('token');
+
 fetch('http://localhost:3000/modules', {
-    method: 'GET'
+    method: 'GET',
+    headers: {
+        'Authorization': 'Bearer ' + token
+    }
 })
     .then(response => {
         if (!response.ok) {

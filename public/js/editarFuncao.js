@@ -1,6 +1,11 @@
+const token = localStorage.getItem('token');
+
 function carregarInformacoesFuncao(functionId) {
     fetch(`http://localhost:3000/function/${functionId}`, {
-        method: 'GET'
+        method: 'GET',
+        headers: {
+            'Authorization': 'Bearer ' + token
+        }
 
     })
         .then(response => {
@@ -46,6 +51,7 @@ document.getElementById('form-container').addEventListener('submit', function (e
     fetch(`http://localhost:3000/function/${functionId}`, {
         method: 'PUT',
         headers: {
+            'Authorization': 'Bearer ' + token,
             'Content-Type': 'application/json'
         },
         body: JSON.stringify(dadosFuncao)
