@@ -13,8 +13,8 @@ def enviar_email(destinatario, assunto, mensagem):
     smtp_server = 'smtp.gmail.com'  # Exemplo: smtp.gmail.com para Gmail
     smtp_port = 587  # Porta SMTP 587 é mais segura e recomendada
 
-    email_envio = os.getenv('EMAIL_ENVIO')
-    senha = os.getenv('SENHA')
+    email_envio = 'qqtechbeaba@gmail.com'
+    senha = 'lajc oxbk sdnn ubxk'
 
     # Construção do e-mail
     msg = MIMEMultipart()
