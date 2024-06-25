@@ -1,23 +1,34 @@
-const { PythonShell } = require('python-shell');
+const { spawn } = require('child_process');
 const path = require('path');
 
 const resetPassword = async (req, res) => {
     const { email } = req.body;
 
-    let options = {
-        mode: 'text',
-        scriptPath: path.join(__dirname, '../utils'),
-        args: [email]
-    };
+    // Caminho absoluto para o script Python
+    const scriptPath = path.join(__dirname, '../utils/enviarEmail.py');
 
-    PythonShell.run('enviarEmail.py', options, function (err, results) {
-        if (err) {
-            console.error('Erro ao chamar script Python:', err);
-            return res.status(500).json({ success: false, message: 'Erro ao enviar e-mail.' });
+    // Inicializa o processo Python
+    const pythonProcess = spawn('python', [scriptPath, email]);
+
+    // Captura dos dados de saída (stdout)
+    pythonProcess.stdout.on('data', (data) => {
+        console.log(`Resultado do script Python: ${data}`);
+    });
+
+    // Captura de erros (stderr)
+    pythonProcess.stderr.on('data', (data) => {
+        console.error(`Erro no script Python: ${data}`);
+        res.status(500).json({ success: false, message: 'Erro ao enviar e-mail.' });
+    });
+
+    // Verifica o término do processo Python
+    pythonProcess.on('close', (code) => {
+        if (code === 0) {
+            res.json({ success: true, message: 'Email de recuperação de senha enviado com sucesso!' });
+        } else {
+            console.error(`Script Python encerrou com código de erro: ${code}`);
+            res.status(500).json({ success: false, message: 'Erro ao enviar e-mail.' });
         }
-
-        console.log('Resultado do script Python:', results);
-        res.json({ success: true, message: 'Email de recuperação de senha enviado com sucesso!' });
     });
 };
 

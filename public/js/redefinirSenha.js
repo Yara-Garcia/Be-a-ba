@@ -2,7 +2,6 @@ document.getElementById('recuperar-senha-container').addEventListener('submit', 
     event.preventDefault();
 
     let email = document.getElementById('email').value;
-    console.log(email)
 
     try {
         const response = await fetch('http://localhost:3000/resetPassword', {
