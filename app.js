@@ -12,7 +12,7 @@ const { createFunction, updateFunction, deleteFunction, getFunctionInfos, showFu
 const { moduleTransactionAssociation, showAssociations, deleteModuleTransactionAssociation } = require('./controllers/modulosTransacoesAssociacao');
 const { profileFunctionAssociation, deleteProfileFunctionAssociation, getFunctionAssociations } = require('./controllers/perfisFuncoesAssociacao');
 const { profileModuleAssociation, deleteProfileModuleAssociation, getProfileModuleAssociations } = require('./controllers/perfilModulosAssociacao');
-const resetPassword = require('./controllers/redefinirSenha');
+const { resetPassword, resetPasswordRequest } = require('./controllers/redefinirSenha');
 
 const app = express();
 const PORT = 3000;
@@ -44,6 +44,7 @@ app.listen(PORT, () => {
 
 
 app.post('/login', login);
+app.post('/resetPasswordRequest', resetPasswordRequest)
 app.post('/resetPassword', resetPassword)
 
 app.use(authenticateUser);
