@@ -32,6 +32,11 @@ const Usuario = sequelize.define('Usuario', {
         type: DataTypes.INTEGER,
         allowNull: true,
         unique: true
+    },
+    tipo_usuario: {
+        type: DataTypes.ENUM('admin', 'comum'),
+        allowNull: false,
+        defaultValue: 'comum'
     }
 }, {
     // Opções do modelo

@@ -66,53 +66,60 @@
                         </li>
                     </ul>
                 </div>
-    </div>
-    </nav>
+            </nav>
+        </header>
 
-    <nav id="main-navbar" class="navbar navbar-expand-lg navbar-light fixed-top">
-        <div class="container-fluid">
-            <button data-mdb-button-init class="navbar-toggler" type="button" data-mdb-collapse-init
-                data-mdb-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false"
-                aria-label="Toggle navigation">
-                <i class="fas fa-bars"></i> <span class="navbar-toggler-icon"></span>
-            </button>
-        </div>
-    </nav>
-    </header>
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+            <div class="main-content">
+                <h2 id="titulo">Criar Usuário</h2>
+                <br>
+                <form id="form-container">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="campo mb-3">
+                                <label for="nome-usuario" class="form-label">Nome Completo:</label>
+                                <input type="text" class="form-control" id="nome-usuario" name="nome-usuario" required>
+                            </div>
+                            <div class="campo mb-3">
+                                <label for="email" class="form-label">E-mail:</label>
+                                <input type="email" class="form-control" id="email" name="email" required>
+                            </div>
+                            <div class="campo mb-3">
+                                <label for="matricula" class="form-label">Matrícula:</label>
+                                <input type="text" class="form-control" id="matricula" name="matricula" required>
+                            </div>
 
-    <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-        <div class="main-content">
-            <h2 id="titulo">Criar Usuário</h2>
-            <br>
-            <form id="form-container">
-                <div class="mb-3">
-                    <label for="nome-usuario" class="form-label">Nome Completo:</label>
-                    <input type="text" class="form-control" id="nome-usuario" name="nome-usuario" required>
-                </div>
-                <div class="mb-3">
-                    <label for="email" class="form-label">E-mail:</label>
-                    <input type="email" class="form-control" id="email" name="email" required>
-                </div>
-                <div class="mb-3">
-                    <label for="matricula" class="form-label">Matrícula:</label>
-                    <input type="text" class="form-control" id="matricula" name="matricula" required>
-                </div>
-                <div class="mb-3">
-                    <label for="senha" class="form-label">Senha:</label>
-                    <input type="password" class="form-control" id="senha" name="senha" required>
-                    <span class="icon"><i class="fas fa-eye" id="mostrar-senha"></i></span>
-                </div>
-                <div class="mb-3">
-                    <label for="associar-perfil" class="form-label">Associar Perfil:</label><br>
-                    <select id="associar-perfil" class="form-select" required>
-                        <option value="" disabled>Selecione</option>
-                    </select>
-                </div>
-                <button type="button" id="btn-cancelar" class="btn btn-secondary">Cancelar</button>
-                <button type="submit" id="btn-salvar" class="btn btn-success">Salvar</button>
-            </form>
-        </div>
-    </main>
+                            <div class="campo mb-3">
+                                <label for="senha" class="form-label">Senha:</label>
+                                <input type="password" class="form-control" id="senha" name="senha" required>
+                                <span class="icon"><i class="fas fa-eye" id="mostrar-senha"></i></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="campo mb-3">
+                                <label for="associar-perfil" class="form-label">Associar Perfil:</label>
+                                <select id="associar-perfil" class="form-select" required>
+                                    <option value="" disabled selected>Selecione</option>
+                                    <!-- Opções de perfis aqui -->
+                                </select>
+                            </div>
+                            <div class="campo mb-3">
+                                <label for="tipo-usuario" class="form-label">Tipo de usuário:</label>
+                                <select id="tipo-usuario" class="form-select" required>
+                                    <option value="" disabled selected>Selecione</option>
+                                    <option value="admin">Administrador</option>
+                                    <option value="comum">Comum</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <button type="button" id="btn-cancelar" class="btn btn-secondary">Cancelar</button>
+                        <button type="submit" id="btn-salvar" class="btn btn-success">Salvar</button>
+                    </div>
+                </form>
+            </div>
+        </main>
     </div>
     </div>
 

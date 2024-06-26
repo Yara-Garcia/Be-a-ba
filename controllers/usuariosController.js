@@ -3,7 +3,7 @@ const { hash } = require('bcrypt');
 const { Op } = require('sequelize');
 
 const createUser = async (req, res) => {
-    const { nome_usuario, email, senha, matricula, id_perfil } = req.body;
+    const { nome_usuario, email, senha, matricula, id_perfil, tipo_usuario } = req.body;
     try {
 
         const userAlreadyExists = await Usuario.findOne({
@@ -22,7 +22,7 @@ const createUser = async (req, res) => {
 
         const encryptedPassword = await hash(senha, 10); //criptografia de senha
 
-        const newUser = await Usuario.create({ nome_usuario, email, senha: encryptedPassword, matricula, id_perfil });
+        const newUser = await Usuario.create({ nome_usuario, email, senha: encryptedPassword, matricula, id_perfil, tipo_usuario });
         delete newUser.dataValues.senha;
 
         // Adiciona chave success na resposta JSON
@@ -35,7 +35,7 @@ const createUser = async (req, res) => {
 };
 
 const updateUser = async (req, res) => {
-    const { nome_usuario, email, senha, matricula, id_perfil } = req.body;
+    const { nome_usuario, email, senha, matricula, id_perfil, tipo_usuario } = req.body;
     const { id_usuario } = req.params;
 
     try {
@@ -62,7 +62,7 @@ const updateUser = async (req, res) => {
 
         const encryptedPassword = await hash(senha, 10);
 
-        const updatedUser = await Usuario.update({ nome_usuario, email, senha: encryptedPassword, matricula, id_perfil },
+        const updatedUser = await Usuario.update({ nome_usuario, email, senha: encryptedPassword, matricula, id_perfil, tipo_usuario },
             { where: { id_usuario: id_usuario } }
         ); //neste caso, o usuario so pode atualizar suas proprias informacoes. Caso seja um adm, retirar a condição where.
 
