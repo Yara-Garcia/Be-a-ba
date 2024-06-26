@@ -32,7 +32,7 @@ const login = async (req, res) => {
             return res.status(400).json({ success: false, message: 'Usuário ou senha inválida!' })
         }
 
-        const token = jwt.sign({ id_usuario: userData.id_usuario }, senhaJWT, { expiresIn: '8h' });
+        const token = jwt.sign({ id_usuario: userData.id_usuario, tipo_usuario: userData.tipo_usuario }, senhaJWT, { expiresIn: '8h' });
 
         return res.json({
             success: true,

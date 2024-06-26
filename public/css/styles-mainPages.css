@@ -5,11 +5,11 @@ body {
     min-height: 100vh;
 }
 
-.active-page .nav-item-gestao-usuarios .nav-link,
-.active-page .nav-item-gestao-perfis .nav-link,
-.active-page .nav-item-gestao-modulos .nav-link,
-.active-page .nav-item-gestao-transacoes .nav-link,
-.active-page .nav-item-gestao-funcoes .nav-link {
+.active-page #nav-item-gestao-usuarios .nav-link,
+.active-page #nav-item-gestao-perfis .nav-link,
+.active-page #nav-item-gestao-modulos .nav-link,
+.active-page #nav-item-gestao-transacoes .nav-link,
+.active-page #nav-item-gestao-funcoes .nav-link {
     background-color: #0F6CBF;
     color: #ffffff;
 }
