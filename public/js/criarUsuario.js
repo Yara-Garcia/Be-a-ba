@@ -51,13 +51,15 @@ document.getElementById('form-container').addEventListener('submit', function (e
     const senha = document.getElementById('senha').value;
     const matricula = document.getElementById('matricula').value;
     const idPerfil = document.getElementById('associar-perfil').value;
+    const tipoUsuario = document.getElementById('tipo-usuario').value;
 
     const dadosUsuario = {
         nome_usuario: nomeUsuario,
         email: email,
         senha: senha,
         matricula: matricula,
-        id_perfil: idPerfil
+        id_perfil: idPerfil,
+        tipo_usuario: tipoUsuario
     };
 
     fetch('http://localhost:3000/user', {
