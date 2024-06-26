@@ -26,8 +26,9 @@ document.getElementById('login-container').addEventListener('submit', async func
 
         if (response.ok) {
             alert(data.message); // Exibe o alerta apenas se a resposta for OK (status 200-299)
-            document.getElementById('nova-senha').value = ''; // Limpa o campo de nova senha
-            document.getElementById('confirmar-senha').value = ''; // Limpa o campo de confirmar senha
+            document.getElementById('nova-senha').value = '';
+            document.getElementById('confirmar-senha').value = '';
+            window.location.href = '../html/login.html';
         } else {
             console.error('Erro ao alterar senha:', data.message); // Loga o erro no console do navegador
             alert('Ocorreu um erro ao alterar a senha. Por favor, tente novamente.');
