@@ -29,13 +29,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             });
 
-            // Esconde a coluna "Ações" na tabela para usuários comuns
-            if (tipoUsuario !== 'admin') {
-                colActions.forEach(col => {
-                    col.style.display = 'none';
-                });
-            }
-
             // Configuração do evento de logout apenas se o elemento logoutLink estiver presente
             const logoutLink = document.getElementById('logoutLink');
             if (logoutLink) {
