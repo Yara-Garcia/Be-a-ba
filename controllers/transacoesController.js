@@ -110,7 +110,13 @@ const showTransactions = async (req, res) => {
     try {
         const transactions = await Transacao.findAll();
 
-        return res.status(200).json({ success: true, transactions });
+        let transactionsQuantitaty = 0;
+
+        transactions.forEach(transaction => {
+            transactionsQuantitaty++;
+        })
+
+        return res.status(200).json({ success: true, transactions, transactionsQuantitaty });
     } catch (erro) {
         console.log(erro.message)
         return res.status(500).json({ success: false, mensagem: 'Erro interno do servidor.' });

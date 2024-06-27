@@ -106,7 +106,14 @@ const getModuleInfos = async (req, res) => {
 const showModules = async (req, res) => {
     try {
         const modules = await Modulo.findAll();
-        return res.status(200).json({ success: true, modules });
+
+        let modulesQuantitaty = 0;
+
+        modules.forEach(module => {
+            modulesQuantitaty++;
+        })
+
+        return res.status(200).json({ success: true, modules, modulesQuantitaty });
     } catch (erro) {
         console.log(erro.message)
         return res.status(500).json({ success: false, mensagem: 'Erro interno do servidor.' });

@@ -120,7 +120,14 @@ const getProfileInfos = async (req, res) => {
 const showProfiles = async (req, res) => {
     try {
         const profiles = await Perfil.findAll();
-        return res.status(200).json({ success: true, profiles });
+
+        let profilesQuantitaty = 0;
+
+        profiles.forEach(profile => {
+            profilesQuantitaty++;
+        })
+
+        return res.status(200).json({ success: true, profiles, profilesQuantitaty });
     } catch (erro) {
         console.log(erro.message)
         return res.status(500).json({ success: false, mensagem: 'Erro interno do servidor.' });

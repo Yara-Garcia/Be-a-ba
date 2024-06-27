@@ -122,12 +122,14 @@ const showUsers = async (req, res) => {
     try {
         const users = await Usuario.findAll();
 
+        let usersQuantitaty = 0;
+
         users.forEach(user => {
+            usersQuantitaty++;
             delete user.dataValues.senha;
         });
 
-
-        return res.status(200).json({ success: true, users });
+        return res.status(200).json({ success: true, users, usersQuantitaty });
     } catch (erro) {
         console.log(erro.message)
         return res.status(500).json({ success: false, mensagem: 'Erro interno do servidor.' });
@@ -139,5 +141,5 @@ module.exports = {
     updateUser,
     deleteUser,
     getUserInfos,
-    showUsers
+    showUsers, users
 }

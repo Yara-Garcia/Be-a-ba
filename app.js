@@ -13,6 +13,7 @@ const { moduleTransactionAssociation, showAssociations, deleteModuleTransactionA
 const { profileFunctionAssociation, deleteProfileFunctionAssociation, getFunctionAssociations } = require('./controllers/perfisFuncoesAssociacao');
 const { profileModuleAssociation, deleteProfileModuleAssociation, getProfileModuleAssociations } = require('./controllers/perfilModulosAssociacao');
 const { resetPassword, resetPasswordRequest } = require('./controllers/redefinirSenha');
+const { getDashboardData, getUsersData } = require('./controllers/relatorios');
 
 const app = express();
 const PORT = 3000;
@@ -86,4 +87,6 @@ app.post('/profileModuleAssociation', profileModuleAssociation);
 app.delete('/deleteProfileModuleAssociation/:id_associacao', deleteProfileModuleAssociation);
 app.get('/profileModuleAssociationsList', getProfileModuleAssociations);
 
+//relatórios
+app.get('/dashboard', getUsersData)
 

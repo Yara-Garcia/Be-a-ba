@@ -105,8 +105,14 @@ const getFunctionInfos = async (req, res) => {
 const showFunctions = async (req, res) => {
     try {
         const functions = await Funcao.findAll();
-        console.log(functions)
-        return res.status(200).json({ success: true, functions });
+
+        let functionsQuantitaty = 0;
+
+        functions.forEach(func => {
+            functionsQuantitaty++;
+        })
+
+        return res.status(200).json({ success: true, functions, functionsQuantitaty });
     } catch (erro) {
         console.log(erro.message)
         return res.status(500).json({ success: false, mensagem: 'Erro interno do servidor.' });
