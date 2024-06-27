@@ -17,6 +17,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const colActions = document.querySelectorAll('.col-actions');
 
 
+            // Mostra ou esconde os itens do menu dependendo do tipo de usuário
             navItems.forEach(item => {
                 if (tipoUsuario === 'admin') {
                     item.classList.add('d-block'); // Mostra todos os itens para administradores
@@ -30,7 +31,6 @@ document.addEventListener('DOMContentLoaded', function () {
             });
 
             if (tipoUsuario !== 'admin') {
-
                 colActions.forEach(col => {
                     col.style.display = 'none';
                 });
