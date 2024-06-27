@@ -55,11 +55,11 @@ document.addEventListener('DOMContentLoaded', function () {
                                     users.forEach(user => {
                                         const tableRow = document.createElement('tr');
 
-                                        const thNome = document.createElement('th');
-                                        thNome.scope = "row";
-                                        thNome.className = "col-name";
-                                        thNome.textContent = user.nome_usuario;
-                                        thNome.setAttribute('user-id', user.id_usuario);
+                                        const tdNome = document.createElement('td');
+                                        tdNome.scope = "row";
+                                        tdNome.className = "col-name";
+                                        tdNome.textContent = user.nome_usuario;
+                                        tdNome.setAttribute('user-id', user.id_usuario);
 
                                         const profile = profilesMap.get(user.id_perfil);
                                         const tdPerfil = document.createElement('td');
@@ -97,7 +97,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                             tdAcoes.appendChild(deletarIcon);
                                         }
 
-                                        tableRow.appendChild(thNome);
+                                        tableRow.appendChild(tdNome);
                                         tableRow.appendChild(tdPerfil);
                                         tableRow.appendChild(tdAcoes);
 
