@@ -38,12 +38,12 @@ document.addEventListener('DOMContentLoaded', function () {
                         functions.forEach(functionData => {
                             const tableRow = document.createElement('tr');
 
-                            const thNome = document.createElement('th');
-                            thNome.scope = "row";
-                            thNome.className = "col-name";
-                            thNome.textContent = functionData.nome_funcao;
+                            const tdNome = document.createElement('td');
+                            tdNome.scope = "row";
+                            tdNome.className = "col-name";
+                            tdNome.textContent = functionData.nome_funcao;
 
-                            thNome.setAttribute('function-id', functionData.id_funcao);
+                            tdNome.setAttribute('function-id', functionData.id_funcao);
 
                             const descricao = functionData.descricao;
                             const tdDescricao = document.createElement('td');
@@ -79,7 +79,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                 tdAcoes.appendChild(deletarIcon);
                             }
 
-                            tableRow.appendChild(thNome);
+                            tableRow.appendChild(tdNome);
                             tableRow.appendChild(tdDescricao);
                             tableRow.appendChild(tdAcoes);
 

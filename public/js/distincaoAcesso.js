@@ -12,6 +12,14 @@ document.addEventListener('DOMContentLoaded', function () {
         if (decoded && decoded.tipo_usuario) {
             const tipoUsuario = decoded.tipo_usuario;
 
+            const btnCriar = document.querySelector('.btn.btn-success');
+
+            if (tipoUsuario === 'admin') {
+                btnCriar.style.display = 'inline-block'; // Mostra o botão para administradores
+            } else {
+                btnCriar.style.display = 'none'; // Esconde o botão para não administradores
+            }
+
             // Selecionando os elementos da barra de navegação que devem ser modificados
             const navItems = document.querySelectorAll('.nav-item-gestao-usuarios, .nav-item-gestao-perfis, .nav-item-gestao-modulos, .nav-item-gestao-transacoes, .nav-item-gestao-funcoes, .nav-item, .dropdown-item');
             const colActions = document.querySelectorAll('.col-actions');

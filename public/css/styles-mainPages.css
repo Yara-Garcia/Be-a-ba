@@ -38,22 +38,17 @@ body {
     /* Ensure fixed layout */
 }
 
-.table th {
+.table th,
+.table td {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
-.col-name {
-    font-weight: normal;
-    /* Remover negrito */
-}
-
 .table th.col-name,
 .table td.col-name {
-    width: auto
+    width: auto;
 }
-
 
 #row {
     font-weight: lighter;
