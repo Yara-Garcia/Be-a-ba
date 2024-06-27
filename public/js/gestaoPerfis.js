@@ -1,116 +1,129 @@
 import { confirmarExclusaoPerfil } from "./deletarPerfil.js";
 
-const token = localStorage.getItem('token');
+document.addEventListener('DOMContentLoaded', function () {
+    const token = localStorage.getItem('token');
 
-fetch('http://localhost:3000/profiles', {
-    method: 'GET',
-    headers: {
-        'Authorization': 'Bearer ' + token
+    if (!token) {
+        window.location.href = '../html/login.html';
+        return;
     }
-})
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Falha na requisição: ' + response.statusText);
-        }
-        return response.json();
-    })
-    .then(data => {
-        if (data.success) {
-            const profiles = data.profiles;
 
-            profiles.sort((a, b) => a.nome_perfil.localeCompare(b.nome_perfil));
+    try {
+        const decoded = parseJwt(token);
 
-            const tableBody = document.querySelector('table.table-hover tbody');
+        if (decoded && decoded.tipo_usuario) {
+            const tipoUsuario = decoded.tipo_usuario;
 
-            tableBody.innerHTML = '';
-
-            profiles.forEach(profile => {
-                const tableRow = document.createElement('tr');
-
-                const thNome = document.createElement('th');
-                thNome.scope = "row";
-                thNome.className = "col-name";
-                thNome.id = "row";
-                thNome.textContent = profile.nome_perfil;
-
-                thNome.setAttribute('profile-id', profile.id_perfil);
-
-                const descricao = profile.descricao;
-                const tdDescricao = document.createElement('td');
-                tdDescricao.className = "col-description";
-                tdDescricao.textContent = descricao ? descricao : '';
-
-                const tdAcoes = document.createElement('td');
-                tdAcoes.class = "col-actions";
-
-                const editarIcon = criarSvgIcone('editar', `editarperfil.html?id_perfil=${profile.id_perfil}`);
-                const deletarIcon = criarSvgIcone('deletar', 'gestaoPerfis.html');
-                deletarIcon.setAttribute('profile-id', profile.id_perfil);
-
-                //deletar perfil
-                deletarIcon.addEventListener('click', function (event) {
-                    event.preventDefault();
-                    const modal = new bootstrap.Modal(document.getElementById('confirmarExclusaoModal'));
-                    modal.show();
-
-                    const profileId = this.getAttribute('profile-id');
-                    confirmarExclusaoPerfil(profileId);
-                });
-
-                editarIcon.setAttribute('data-bs-toggle', 'tooltip');
-                editarIcon.setAttribute('data-placement', 'top');
-                editarIcon.setAttribute('title', 'Editar');
-                deletarIcon.setAttribute('data-bs-toggle', 'tooltip');
-                deletarIcon.setAttribute('data-placement', 'top');
-                deletarIcon.setAttribute('title', 'Excluir');
-
-                // Adiciona os ícones de edição e exclusão à célula de ações
-                tdAcoes.appendChild(editarIcon);
-                tdAcoes.appendChild(document.createTextNode(' ')); // Adiciona um espaço entre os ícones
-                tdAcoes.appendChild(deletarIcon);
-
-                // Adiciona a linha com o nome do usuário e as ações à tabela
-                tableRow.appendChild(thNome);
-                tableRow.appendChild(tdDescricao);
-                tableRow.appendChild(tdAcoes);
-
-                // Adiciona a linha completa à tabela
-                tableBody.appendChild(tableRow);
-            });
-
-            // Barra de pesquisa
-            const searchInput = document.getElementById('search-focus');
-            const tabelaPerfis = document.querySelector('.main-content table');
-
-            searchInput.addEventListener('input', function () {
-                const filtro = removerAcentos(this.value.toLowerCase()); // Normaliza e converte para minúsculas
-                filtrarTabela(filtro);
-            });
-
-            function removerAcentos(texto) {
-                return texto.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-            }
-
-            function filtrarTabela(filtro) {
-                const linhas = tabelaPerfis.querySelectorAll('tbody tr');
-                linhas.forEach(linha => {
-                    const nomePerfil = removerAcentos(linha.querySelector('.col-name').textContent.toLowerCase()); // Normaliza e converte para minúsculas
-                    const descricao = removerAcentos(linha.querySelector('.col-description').textContent.toLowerCase()); // Normaliza e converte para minúsculas
-                    if (nomePerfil.includes(filtro) || descricao.includes(filtro)) {
-                        linha.style.display = 'table-row';
-                    } else {
-                        linha.style.display = 'none';
+            fetch('http://localhost:3000/profiles', {
+                method: 'GET',
+                headers: {
+                    'Authorization': 'Bearer ' + token
+                }
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Falha na requisição: ' + response.statusText);
                     }
-                });
-            }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.success) {
+                        const profiles = data.profiles;
 
-        } else {
-            console.error('Erro ao buscar perfis:', data.message);
+                        profiles.sort((a, b) => a.nome_perfil.localeCompare(b.nome_perfil));
+
+                        const tableBody = document.querySelector('table.table-hover tbody');
+                        tableBody.innerHTML = '';
+
+                        profiles.forEach(profile => {
+                            const tableRow = document.createElement('tr');
+
+                            const tdNome = document.createElement('td');
+                            tdNome.scope = "row";
+                            tdNome.className = "col-name";
+                            tdNome.id = "row";
+                            tdNome.textContent = profile.nome_perfil;
+
+                            tdNome.setAttribute('profile-id', profile.id_perfil);
+
+                            const descricao = profile.descricao;
+                            const tdDescricao = document.createElement('td');
+                            tdDescricao.className = "col-description";
+                            tdDescricao.textContent = descricao ? descricao : '';
+
+                            const tdAcoes = document.createElement('td');
+                            tdAcoes.className = "col-actions";
+
+                            if (tipoUsuario === 'admin') {
+                                const editarIcon = criarSvgIcone('editar', `editarperfil.html?id_perfil=${profile.id_perfil}`);
+                                const deletarIcon = criarSvgIcone('deletar', 'gestaoPerfis.html');
+                                deletarIcon.setAttribute('profile-id', profile.id_perfil);
+
+                                deletarIcon.addEventListener('click', function (event) {
+                                    event.preventDefault();
+                                    const modal = new bootstrap.Modal(document.getElementById('confirmarExclusaoModal'));
+                                    modal.show();
+
+                                    const profileId = this.getAttribute('profile-id');
+                                    confirmarExclusaoPerfil(profileId);
+                                });
+
+                                editarIcon.setAttribute('data-bs-toggle', 'tooltip');
+                                editarIcon.setAttribute('data-placement', 'top');
+                                editarIcon.setAttribute('title', 'Editar');
+                                deletarIcon.setAttribute('data-bs-toggle', 'tooltip');
+                                deletarIcon.setAttribute('data-placement', 'top');
+                                deletarIcon.setAttribute('title', 'Excluir');
+
+                                tdAcoes.appendChild(editarIcon);
+                                tdAcoes.appendChild(document.createTextNode(' '));
+                                tdAcoes.appendChild(deletarIcon);
+                            }
+
+                            tableRow.appendChild(tdNome);
+                            tableRow.appendChild(tdDescricao);
+                            tableRow.appendChild(tdAcoes);
+
+                            tableBody.appendChild(tableRow);
+                        });
+
+                        const searchInput = document.getElementById('search-focus');
+                        const tabelaPerfis = document.querySelector('.main-content table');
+
+                        searchInput.addEventListener('input', function () {
+                            const filtro = removerAcentos(this.value.toLowerCase());
+                            filtrarTabela(filtro);
+                        });
+
+                        function removerAcentos(texto) {
+                            return texto.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+                        }
+
+                        function filtrarTabela(filtro) {
+                            const linhas = tabelaPerfis.querySelectorAll('tbody tr');
+                            linhas.forEach(linha => {
+                                const nomePerfil = removerAcentos(linha.querySelector('.col-name').textContent.toLowerCase());
+                                const descricao = removerAcentos(linha.querySelector('.col-description').textContent.toLowerCase());
+                                if (nomePerfil.includes(filtro) || descricao.includes(filtro)) {
+                                    linha.style.display = 'table-row';
+                                } else {
+                                    linha.style.display = 'none';
+                                }
+                            });
+                        }
+
+                    } else {
+                        console.error('Erro ao buscar perfis:', data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Erro:', error);
+                });
         }
-    })
-    .catch(error => {
-        console.error('Erro:', error);
-    });
+    } catch (error) {
+        console.error('Erro ao decodificar o token:', error);
+    }
+});
 
 function criarSvgIcone(tipoIcone, url) {
     const svgString = obterSvgString(tipoIcone);
@@ -118,7 +131,6 @@ function criarSvgIcone(tipoIcone, url) {
     const svgDocument = parser.parseFromString(svgString, 'image/svg+xml');
     const svgIcon = svgDocument.documentElement;
 
-    // Cria um link e adiciona o ícone SVG dentro dele
     const link = document.createElement('a');
     link.href = url;
     link.appendChild(svgIcon);
@@ -150,5 +162,20 @@ function obterSvgString(tipoIcone) {
     } else {
         console.warn('Tipo de ícone não suportado:', tipoIcone);
         return '';
+    }
+}
+
+function parseJwt(token) {
+    try {
+        const base64Url = token.split('.')[1];
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+        const jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
+            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
+
+        return JSON.parse(jsonPayload);
+    } catch (error) {
+        console.error('Erro ao decodificar o token:', error);
+        return null;
     }
 }

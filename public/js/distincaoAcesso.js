@@ -12,31 +12,36 @@ document.addEventListener('DOMContentLoaded', function () {
         if (decoded && decoded.tipo_usuario) {
             const tipoUsuario = decoded.tipo_usuario;
 
-
             // Selecionando os elementos da barra de navegação que devem ser modificados
             const navItems = document.querySelectorAll('.nav-item-gestao-usuarios, .nav-item-gestao-perfis, .nav-item-gestao-modulos, .nav-item-gestao-transacoes, .nav-item-gestao-funcoes, .nav-item, .dropdown-item');
+            const colActions = document.querySelectorAll('.col-actions');
+
 
             navItems.forEach(item => {
                 if (tipoUsuario === 'admin') {
-                    // Mostra todos os itens para administradores
-                    item.style.display = 'block';
+                    item.classList.add('d-block'); // Mostra todos os itens para administradores
                 } else {
-                    console.log("comum")
                     if (item.classList.contains('nav-item-gestao-perfis')) {
-                        item.style.display = 'none'; // Esconde o item de gestão de usuários para não administradores
+                        item.classList.add('d-none'); // Esconde o item de gestão de perfis para não administradores
                     } else {
-                        item.style.display = 'block'; // Mostra os outros itens
+                        item.classList.add('d-block'); // Mostra os outros itens
                     }
                 }
             });
 
-            // Configuração do evento de logout apenas se o elemento logoutLink estiver presente
+            if (tipoUsuario !== 'admin') {
+
+                colActions.forEach(col => {
+                    col.style.display = 'none';
+                });
+            }
+
             const logoutLink = document.getElementById('logoutLink');
             if (logoutLink) {
                 logoutLink.addEventListener('click', function (event) {
-                    event.preventDefault(); // Previne o comportamento padrão do link
-                    localStorage.removeItem('token'); // Remove o token do localStorage
-                    window.location.href = '../html/login.html'; // Redireciona para a página de login
+                    event.preventDefault();
+                    localStorage.removeItem('token');
+                    window.location.href = '../html/login.html';
                 });
             }
         } else {
