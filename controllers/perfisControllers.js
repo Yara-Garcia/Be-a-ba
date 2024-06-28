@@ -2,6 +2,7 @@ const Perfil = require("../models/perfis");
 const Modulo = require("../models/modulos");
 const Transacao = require("../models/transacoes");
 const Funcao = require('../models/funcoes');
+const Usuario = require('../models/usuarios');
 const PerfilFuncao = require('../models/perfilFuncao');
 const { Op } = require('sequelize');
 
@@ -134,10 +135,50 @@ const showProfiles = async (req, res) => {
     }
 };
 
+const getUsersByProfile = async (req, res) => {
+    try {
+        // Primeiro, obtemos a contagem de usuários por perfil
+        const profileCounts = await Usuario.findAll({
+            attributes: [
+                'id_perfil',
+                [Usuario.sequelize.fn('COUNT', Usuario.sequelize.col('*')), 'total']
+            ],
+            group: ['id_perfil'],
+            raw: true
+        });
+
+        // Obtemos os IDs dos perfis para buscar seus nomes
+        const profileIds = profileCounts.map(profile => profile.id_perfil);
+
+        // Agora, buscamos os nomes dos perfis usando os IDs
+        const profiles = await Perfil.findAll({
+            attributes: ['id_perfil', 'nome_perfil'],
+            where: {
+                id_perfil: profileIds
+            }
+        });
+
+        // Formatar os dados para o formato desejado
+        const data = profiles.map(profile => {
+            const count = profileCounts.find(count => count.id_perfil === profile.id_perfil);
+            return {
+                perfil: profile.nome_perfil,
+                quantidade: count ? count.total : 0
+            };
+        });
+
+        return res.status(200).json({ success: true, data });
+    } catch (error) {
+        console.error('Erro ao buscar perfis com contagem de usuários:', error.message);
+        return res.status(500).json({ success: false, message: 'Erro interno do servidor!' });
+    }
+};
+
 module.exports = {
     createProfile,
     updateProfile,
     deleteProfile,
     getProfileInfos,
-    showProfiles
+    showProfiles,
+    getUsersByProfile
 }

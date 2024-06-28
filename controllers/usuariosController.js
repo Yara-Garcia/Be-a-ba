@@ -141,5 +141,5 @@ module.exports = {
     updateUser,
     deleteUser,
     getUserInfos,
-    showUsers, users
+    showUsers
 }

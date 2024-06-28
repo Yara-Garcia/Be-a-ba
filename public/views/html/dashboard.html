@@ -7,6 +7,9 @@
     <title>Dashboard</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
     <link rel="stylesheet" type="text/css" href="../../css/header.css" media="screen">
     <link rel="stylesheet" type="text/css" href="../../css/menu.css" media="screen">
     <link rel="stylesheet" type="text/css" href="../../css/styles-mainPages.css" media="screen">
@@ -105,10 +108,10 @@
                         Usuário</a></button>
 
             </div><br>
-
             <div id="graficoContainer">
-                <img id="graficoQuantidade" src="grafico_quantidade.png" alt="Gráfico de Quantidade" />
+                <canvas id="graficoQuantidade" aria-label="Gráfico Perfil X Usuários"></canvas>
             </div>
+
         </div>
     </main>
     </div>
@@ -124,6 +127,7 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/js/bootstrap.min.js"></script>
     <script src="../../js/distincaoAcesso.js"></script>
     <script src="../../js/menuScript.js"></script>
+    <script src="../../js/gerarGrafico.js"></script>
 
 </body>
 

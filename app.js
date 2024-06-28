@@ -6,7 +6,7 @@ const { createUser, updateUser, deleteUser, showUsers, getUserInfos } = require(
 const login = require('./controllers/login');
 const authenticateUser = require('./middlewares/authetication');
 const { createModule, updateModule, deleteModule, showModules, getModuleInfos } = require('./controllers/modulosController');
-const { createProfile, updateProfile, deleteProfile, showProfiles, getProfileInfos } = require('./controllers/perfisControllers');
+const { createProfile, updateProfile, deleteProfile, showProfiles, getProfileInfos, getUsersByProfile } = require('./controllers/perfisControllers');
 const { createTransaction, updateTransaction, deleteTransaction, getTransactionInfos, showTransactions } = require('./controllers/transacoesController');
 const { createFunction, updateFunction, deleteFunction, getFunctionInfos, showFunctions } = require('./controllers/funcoesController');
 const { moduleTransactionAssociation, showAssociations, deleteModuleTransactionAssociation } = require('./controllers/modulosTransacoesAssociacao');
@@ -89,4 +89,5 @@ app.get('/profileModuleAssociationsList', getProfileModuleAssociations);
 
 //relatórios
 app.get('/dashboard', getUsersData)
+app.get('/usersByProfiles', getUsersByProfile)
 
