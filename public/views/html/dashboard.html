@@ -8,6 +8,8 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <link rel="stylesheet" type="text/css" href="../../css/header.css" media="screen">
@@ -104,12 +106,39 @@
                     </button>
                 </div>
 
-                <button type="button" class="btn btn-success"><a href="../html/criarUsuario.html">Criar
-                        Usuário</a></button>
+                <button type="button" id="btn-gerar-relatorio" class="btn btn-success">Gerar Relatório</button>
 
             </div><br>
             <div id="graficoContainer">
                 <canvas id="graficoQuantidade" aria-label="Gráfico Perfil X Usuários"></canvas>
+            </div>
+
+            <div class="modal fade" id="reportModal" tabindex="-1" aria-labelledby="reportModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="reportModalLabel">Selecione o relatório</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <label class="report-label" for="selecionar-relatorios">Selecionar relatório:</label>
+                            <input type="checkbox" class="report-checkbox" value="Usuarios"> Usuários <br>
+                            <input type="checkbox" class="report-checkbox" value="Perfis"> Perfis <br>
+                            <input type="checkbox" class="report-checkbox" value="Modulos"> Módulos <br>
+                            <input type="checkbox" class="report-checkbox" value="Transacoes"> Transações <br>
+                            <input type="checkbox" class="report-checkbox" value="Funcoes"> Funções <br>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" id="btn-fechar-modal" class="btn btn-secondary"
+                                data-dismiss="modal">Fechar</button>
+                            <button type="button" id="btn-download-modal" class="btn btn-primary">Baixar
+                                Relatório</button>
+                        </div>
+                    </div>
+                </div>
             </div>
 
         </div>
@@ -128,6 +157,7 @@
     <script src="../../js/distincaoAcesso.js"></script>
     <script src="../../js/menuScript.js"></script>
     <script src="../../js/gerarGrafico.js"></script>
+    <script src="../../js/baixarRelatorio.js"></script>
 
 </body>
 

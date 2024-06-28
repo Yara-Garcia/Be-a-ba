@@ -1,7 +1,9 @@
 import requests
 import pandas as pd
+from dotenv import load_dotenv
+import os
 
-
+load_dotenv()
 
 # Endpoint do seu backend Node.js
 login_url = 'http://localhost:3000/login'
@@ -9,8 +11,8 @@ users_url = 'http://localhost:3000/users'
 
 # Dados de login (usuário e senha)
 login_data = {
-    'usuario': 'qqtechbeaba@gmail.com',
-    'senha': '123456789'
+    'usuario': os.getenv('EMAIL_LOGIN_ADM'),
+    'senha': os.getenv('SENHA_ADM')
 }
 
 # Função para fazer login e obter o token de autenticação

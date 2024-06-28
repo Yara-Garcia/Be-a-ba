@@ -13,7 +13,7 @@ const { moduleTransactionAssociation, showAssociations, deleteModuleTransactionA
 const { profileFunctionAssociation, deleteProfileFunctionAssociation, getFunctionAssociations } = require('./controllers/perfisFuncoesAssociacao');
 const { profileModuleAssociation, deleteProfileModuleAssociation, getProfileModuleAssociations } = require('./controllers/perfilModulosAssociacao');
 const { resetPassword, resetPasswordRequest } = require('./controllers/redefinirSenha');
-const { getDashboardData, getUsersData } = require('./controllers/relatorios');
+const { usersReportDownload } = require('./controllers/reports');
 
 const app = express();
 const PORT = 3000;
@@ -42,7 +42,6 @@ app.use((err, req, res, next) => {
 app.listen(PORT, () => {
     console.log(`Servidor rodando na porta ${PORT}`);
 });
-
 
 app.post('/login', login);
 app.post('/resetPasswordRequest', resetPasswordRequest)
@@ -88,6 +87,6 @@ app.delete('/deleteProfileModuleAssociation/:id_associacao', deleteProfileModule
 app.get('/profileModuleAssociationsList', getProfileModuleAssociations);
 
 //relatórios
-app.get('/dashboard', getUsersData)
+app.post('/usersReport', usersReportDownload)
 app.get('/usersByProfiles', getUsersByProfile)
 
