@@ -2,10 +2,9 @@ const { exec } = require('child_process');
 const path = require('path');
 const fs = require('fs');
 
-// Endpoint para executar o script Python e retornar o arquivo gerado
 const usersReportDownload = (req, res) => {
-    // Caminho do script Python
     const pythonScript = path.join(__dirname, '../utils/usuarioRelatorio.py');
+    const reportPath = path.join(__dirname, '../utils/relatorio_usuarios.xlsx');
 
     // Executar o script Python
     exec(`python ${pythonScript}`, (error, stdout, stderr) => {
@@ -14,8 +13,9 @@ const usersReportDownload = (req, res) => {
             return res.status(500).send('Erro ao gerar o relatório');
         }
 
-        // Caminho do arquivo gerado pelo script Python
-        const reportPath = path.join(__dirname, 'relatorio_usuarios.xlsx');
+        // Log para verificar o stdout e stderr do script Python
+        console.log(`stdout: ${stdout}`);
+        console.log(`stderr: ${stderr}`);
 
         // Verificar se o arquivo foi gerado
         if (fs.existsSync(reportPath)) {
@@ -35,4 +35,4 @@ const usersReportDownload = (req, res) => {
     });
 };
 
-module.exports = { usersReportDownload }
+module.exports = { usersReportDownload };

@@ -2,7 +2,7 @@ function abrirModal() {
     document.getElementById('btn-gerar-relatorio').addEventListener('click', function (event) {
         event.preventDefault();
         const modalBody = document.querySelector('#reportModal .modal-body');
-        modalBody.innerHTML = ''; // Limpa o conteúdo anterior do modal
+        modalBody.innerHTML = '';
 
         // Adiciona os checkboxes corretamente ao modal
         modalBody.innerHTML += `
