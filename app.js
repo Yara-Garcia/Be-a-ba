@@ -14,6 +14,7 @@ const { profileFunctionAssociation, deleteProfileFunctionAssociation, getFunctio
 const { profileModuleAssociation, deleteProfileModuleAssociation, getProfileModuleAssociations } = require('./controllers/perfilModulosAssociacao');
 const { resetPassword, resetPasswordRequest } = require('./controllers/redefinirSenha');
 const { usersReportDownload, profilesReportDownload, transactionsReportDownload, modulesReportDownload, functionsReportDownload } = require('./controllers/reports');
+const quantitatyData = require('./controllers/graficoQuantidadeController');
 
 const app = express();
 const PORT = 3000;
@@ -88,6 +89,7 @@ app.get('/profileModuleAssociationsList', getProfileModuleAssociations);
 
 //relatórios
 app.get('/usersByProfiles', getUsersByProfile)
+app.get('/quantitatyData', quantitatyData)
 app.post('/usersReport', usersReportDownload)
 app.post('/profilesReport', profilesReportDownload)
 app.post('/transactionsReport', transactionsReportDownload)

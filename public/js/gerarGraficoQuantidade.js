@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             if (decoded && decoded.tipo_usuario) {
                 const tipoUsuario = decoded.tipo_usuario;
-                const response = await fetch('http://localhost:3000/usersByProfiles', {
+                const response = await fetch('http://localhost:3000/quantitatyData', {
                     method: 'GET',
                     headers: {
                         'Authorization': 'Bearer ' + token
@@ -35,20 +35,21 @@ document.addEventListener('DOMContentLoaded', function () {
     // Função para criar o gráfico
     async function createBarChart() {
         const data = await fetchData();
-        if (data.length > 0) {
+        if (data) {
             const ctx = document.getElementById('graficoQuantidade').getContext('2d');
-            const labels = data.map(item => item.perfil);
-            const quantities = data.map(item => item.quantidade);
+            const labels = Object.keys(data);
+
+            const quantities = Object.values(data);
 
             new Chart(ctx, {
                 type: 'bar',
                 data: {
                     labels: labels,
                     datasets: [{
-                        label: 'Quantidade de Usuários',
+                        label: 'Quantidade de cada atributo',
                         data: quantities,
-                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                        borderColor: 'rgba(54, 162, 235, 1)',
+                        backgroundColor: 'rgba(75, 192, 75, 0.2)',
+                        borderColor: 'rgba(75, 192, 75, 1)',
                         borderWidth: 1
                     }]
                 },
