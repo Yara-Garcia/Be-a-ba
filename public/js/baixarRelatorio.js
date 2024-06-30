@@ -26,42 +26,63 @@ function fecharModal(event) {
     $('#reportModal').modal('hide');
 }
 
-abrirModal()
+abrirModal();
 
 document.getElementById('btn-download-modal').addEventListener('click', function () {
     let checkboxes = document.querySelectorAll('.report-checkbox:checked');
     let selectedReports = Array.from(checkboxes).map(checkbox => checkbox.value);
+    console.log(selectedReports)
 
     const token = localStorage.getItem('token');
 
     if (selectedReports.length > 0) {
-        fetch('http://localhost:3000/usersReport', {
-            method: 'POST',
-            headers: {
-                'Authorization': 'Bearer ' + token,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ reports: selectedReports })
-        })
-            .then(response => {
-                if (response.ok) {
-                    return response.blob();
-                }
-                throw new Error('Erro ao gerar o relatório');
+        // Função para fazer o download do relatório
+        const downloadReport = (url, filename) => {
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Authorization': 'Bearer ' + token,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ reports: selectedReports })
             })
-            .then(blob => {
-                let url = window.URL.createObjectURL(blob);
-                let a = document.createElement('a');
-                a.href = url;
-                a.download = 'relatorio_usuarios.xlsx'; // Nome do arquivo de download
-                document.body.appendChild(a);
-                a.click();
-                a.remove();
-                window.URL.revokeObjectURL(url);
-            })
-            .catch(error => {
-                console.error('Erro ao gerar o relatório:', error);
-            });
+                .then(response => {
+                    if (response.ok) {
+                        return response.blob();
+                    }
+                    throw new Error('Erro ao gerar o relatório');
+                })
+                .then(blob => {
+                    let url = window.URL.createObjectURL(blob);
+                    let a = document.createElement('a');
+                    a.href = url;
+                    a.download = filename; // Nome do arquivo de download
+                    document.body.appendChild(a);
+                    a.click();
+                    a.remove();
+                    window.URL.revokeObjectURL(url);
+                })
+                .catch(error => {
+                    console.error('Erro ao gerar o relatório:', error);
+                });
+        };
+
+        // Checar quais relatórios foram selecionados e fazer o fetch adequado
+        if (selectedReports.includes('Usuarios')) {
+            downloadReport('http://localhost:3000/usersReport', 'relatorio_usuarios.xlsx');
+        }
+        if (selectedReports.includes('Perfis')) {
+            downloadReport('http://localhost:3000/profilesReport', 'relatorio_perfis.xlsx');
+        }
+        if (selectedReports.includes('Modulos')) {
+            downloadReport('http://localhost:3000/modulesReport', 'relatorio_modulos.xlsx');
+        }
+        if (selectedReports.includes('Transacoes')) {
+            downloadReport('http://localhost:3000/transactionsReport', 'relatorio_transacoes.xlsx');
+        }
+        if (selectedReports.includes('Funcoes')) {
+            downloadReport('http://localhost:3000/functionsReport', 'relatorio_funcoes.xlsx');
+        }
     } else {
         alert('Por favor, selecione pelo menos um relatório.');
     }
