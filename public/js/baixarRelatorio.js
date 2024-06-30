@@ -61,6 +61,8 @@ document.getElementById('btn-download-modal').addEventListener('click', function
                     a.click();
                     a.remove();
                     window.URL.revokeObjectURL(url);
+
+                    alert('Download feito com sucesso.');
                 })
                 .catch(error => {
                     console.error('Erro ao gerar o relatório:', error);
@@ -83,6 +85,7 @@ document.getElementById('btn-download-modal').addEventListener('click', function
         if (selectedReports.includes('Funcoes')) {
             downloadReport('http://localhost:3000/functionsReport', 'relatorio_funcoes.xlsx');
         }
+
     } else {
         alert('Por favor, selecione pelo menos um relatório.');
     }
