@@ -80,6 +80,8 @@ async function carregarModulosAssociados(profileData) {
     })
 }
 
+let transacoesJaAssociadas = []
+
 async function carregarTransacoesAssociadas(profileData) {
     const dropdownContent = document.querySelector('#transactionsDropdownContent');
     dropdownContent.innerHTML = '';
@@ -109,6 +111,7 @@ async function carregarTransacoesAssociadas(profileData) {
 
         if (isTransactionAssociated) {
             checkbox.checked = true;
+            transacoesJaAssociadas.push(transaction.id_transacao)
         }
 
         // Adicionar o checkbox ao dropdownContent
@@ -278,22 +281,27 @@ async function salvarFuncoesModal(transacaoId) {
 document.getElementById('btn-salvar-modal').addEventListener('click', function (event) {
     event.preventDefault();
 
-    let transacaoId;
     // Encontra o checkbox de transação marcado
-    document.querySelectorAll('.transaction-checkbox').forEach(input => {
-        if (input.checked) {
-            transacaoId = input.value;
-            console.log(transacaoId)
+    const checkboxes = document.querySelectorAll('.transaction-checkbox:checked');
+    if (checkboxes.length === 0) {
+        alert('Selecione uma transação para salvar as funções associadas.');
+        return;
+    }
+
+    checkboxes.forEach(input => {
+        const transactionId = input.value;
+
+        // Verificar se a transação já está associada
+        if (transacoesJaAssociadas.some(id => parseInt(id) === parseInt(transactionId))) {
+            console.log(`Transação ${transactionId} já está associada.`);
+        } else {
+            console.log(`Transaction ID não está na lista, adicionando: ${transactionId}`);
+            salvarFuncoesModal(transactionId);
+            transacoesJaAssociadas.push(transactionId); // Atualizar a lista de transações associadas
         }
     });
-
-    if (transacaoId) {
-        salvarFuncoesModal(transacaoId);
-        fecharModal(event);
-    } else {
-        alert('Não foi possível salvar as funções!');
-    }
 });
+
 
 // Função para verificar se a associação de perfil e modulo já existe
 async function checarAssociacaoPerfilModulo(perfilId, moduloId) {
@@ -520,12 +528,12 @@ document.getElementById('btn-salvar').addEventListener('click', async function (
         .then(data => {
             if (data.success) {
                 alert('Edição de perfil realizada com sucesso!');
-
             } else {
                 console.log('Data:', data.message)
                 alert('Falha na edição: ' + data.message);
             }
-        })
+        });
+
     try {
         const checkboxes = document.querySelectorAll('#dropdownModulesContent input[type="checkbox"]');
         const modulosParaAssociacao = [];
@@ -571,51 +579,64 @@ document.getElementById('btn-salvar').addEventListener('click', async function (
         let dadosParaAssociacao = [];
         let dadosParaDesassociacao = [];
 
-        // Itera sobre cada checkbox usando for...of para poder usar await corretamente
+        const response = await fetch(`http://localhost:3000/profileFunctionAssociationsList`, {
+            method: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + token
+            }
+        });
+        if (!response.ok) {
+            throw new Error('Falha na requisição: ' + response.statusText);
+        }
+        const data = await response.json();
+        const associations = data.associations;
+
         for (let checkbox of checkboxes) {
             const transacaoId = checkbox.value;
 
-            // Verifica a associação para o perfil, transação e função atuais
-            const { exists: associationExists, id: associationId } = await checarAssociacaoPerfilTransacaoFuncao(perfilId, associacoesPreSalvas);
-
+            // Verifica se a transação está associada
+            const associated = associations.filter(association => transacaoId.toString() === association.id_transacao.toString());
 
             if (checkbox.checked) {
-                if (!associationExists) {
-                    dadosParaAssociacao = [];
-                    for (associacao of associacoesPreSalvas) {
-                        dadosParaAssociacao.push({
-                            id_perfil: perfilId,
-                            id_transacao: associacao.id_transacao,
-                            id_funcao: associacao.id_funcao
-                        });
-                        console.log(dadosParaAssociacao)
+                if (associated.length === 0) {
+                    // Adiciona a nova associação
+                    for (let associacao of associacoesPreSalvas) {
+                        if (transacaoId === associacao.id_transacao) {
+                            dadosParaAssociacao.push({
+                                id_perfil: perfilId,
+                                id_transacao: associacao.id_transacao,
+                                id_funcao: associacao.id_funcao
+                            });
+                        }
                     }
-
                 }
             } else {
-                if (associationExists) {
-                    // Adiciona o ID da associação para desassociação
-                    dadosParaDesassociacao.push(associationId);
+                if (associated.length > 0) {
+                    // Adiciona todos os IDs da associação para desassociação
+                    associated.forEach(association => {
+                        dadosParaDesassociacao.push(association.id_associacao);
+                    });
                 }
+                // Remove a transação desmarcada das funções selecionadas
+                funcoesSelecionadas = funcoesSelecionadas.filter(item => item.id_transacao !== transacaoId);
             }
         }
+
         // Se houver novas associações a serem feitas
         if (dadosParaAssociacao.length > 0) {
-            console.log(dadosParaAssociacao)
             await associarTransacoesEFuncoes(dadosParaAssociacao);
         }
-        console.log(dadosParaAssociacao)
-        console.log(dadosParaDesassociacao)
+
         // Se houver associações a serem desfeitas
         if (dadosParaDesassociacao.length > 0) {
             for (let associationId of dadosParaDesassociacao) {
                 await desassociarTransacoesEPerfis(associationId);
             }
         }
-        window.location.href = '../html/gestaoPerfis.html';
+
     } catch (error) {
         console.error('Erro:', error);
         alert('Falha na edição do perfil: ' + error.message);
     }
+    window.location.href = '../html/gestaoPerfis.html';
 })
-
