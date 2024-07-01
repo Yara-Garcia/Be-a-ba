@@ -62,8 +62,12 @@ const updateUser = async (req, res) => {
 
         const encryptedPassword = await hash(senha, 10);
 
-        const updatedUser = await Usuario.update({ nome_usuario, email, senha: encryptedPassword, matricula, id_perfil, tipo_usuario }
-
+        const updatedUser = await Usuario.update({ nome_usuario, email, senha: encryptedPassword, matricula, id_perfil, tipo_usuario },
+            {
+                where: {
+                    id_usuario: id_usuario
+                }
+            }
         );
 
         if (updatedUser.length === 0) {
