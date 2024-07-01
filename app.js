@@ -2,7 +2,7 @@ const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
 const cors = require('cors');
-const { createUser, updateUser, deleteUser, showUsers, getUserInfos } = require('./controllers/usuariosController');
+const { createUser, updateUser, deleteUser, showUsers, getUserInfos, updateOwnUser } = require('./controllers/usuariosController');
 const login = require('./controllers/login');
 const authenticateUser = require('./middlewares/authetication');
 const { createModule, updateModule, deleteModule, showModules, getModuleInfos } = require('./controllers/modulosController');
@@ -52,6 +52,7 @@ app.use(authenticateUser);
 
 app.post('/user', createUser);
 app.put('/user/:id_usuario', updateUser);
+app.put('/user', updateOwnUser);
 app.delete('/user/:id_usuario', deleteUser);
 app.get('/user/:id_usuario', getUserInfos);
 app.get('/users', showUsers);

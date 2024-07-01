@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', function () {
             }
 
             // Selecionando os elementos da barra de navegação que devem ser modificados
-            const navItems = document.querySelectorAll('.nav-item-gestao-usuarios, .nav-item-gestao-perfis, .nav-item-gestao-modulos, .nav-item-gestao-transacoes, .nav-item-gestao-funcoes, .nav-item, .dropdown-item');
+            const navItems = document.querySelectorAll('.nav-item-gestao-usuarios, .nav-item-gestao-perfis, .nav-item-gestao-modulos, .nav-item-gestao-transacoes, .nav-item-gestao-funcoes, nav-item-dashboard, .nav-item, .dropdown-item');
             const colActions = document.querySelectorAll('.col-actions');
 
 
@@ -30,8 +30,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (tipoUsuario === 'admin') {
                     item.classList.add('d-block'); // Mostra todos os itens para administradores
                 } else {
-                    if (item.classList.contains('nav-item-gestao-perfis')) {
-                        item.classList.add('d-none'); // Esconde o item de gestão de perfis para não administradores
+                    if (item.classList.contains('nav-item-dashboard')) {
+                        item.classList.add('d-none'); // Esconde o item para não administradores
                     } else {
                         item.classList.add('d-block'); // Mostra os outros itens
                     }

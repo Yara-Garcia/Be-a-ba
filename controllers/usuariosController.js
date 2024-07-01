@@ -62,11 +62,43 @@ const updateUser = async (req, res) => {
 
         const encryptedPassword = await hash(senha, 10);
 
-        const updatedUser = await Usuario.update({ nome_usuario, email, senha: encryptedPassword, matricula, id_perfil, tipo_usuario },
-            { where: { id_usuario: id_usuario } }
-        ); //neste caso, o usuario so pode atualizar suas proprias informacoes. Caso seja um adm, retirar a condição where.
+        const updatedUser = await Usuario.update({ nome_usuario, email, senha: encryptedPassword, matricula, id_perfil, tipo_usuario }
+
+        );
 
         if (updatedUser.length === 0) {
+            return res.status(400).json('O usuario não foi atualizado');
+        }
+
+        return res.status(200).json({ success: true, message: 'Usuario foi atualizado com sucesso.' });
+    } catch (error) {
+        console.log(error.message)
+        res.status(500).json({ success: false, message: 'Erro interno do servidor!' });
+    }
+}
+
+const updateOwnUser = async (req, res) => {
+    const { nome_usuario, email, matricula } = req.body;
+    const { id_usuario } = req.usuario;
+
+    try {
+
+        const userExists = await Usuario.findOne({
+            where: {
+                id_usuario: id_usuario
+            }
+        });
+
+        //findeone retorna null se NAO encontrar usuario
+        if (userExists === null) {
+            return res.status(400).json({ success: false, message: 'Usuário não encontrado!' });
+        }
+
+        const updatedOwnUser = await Usuario.update({ nome_usuario, email, matricula },
+            { where: { id_usuario: id_usuario } }
+        ); //neste caso, o usuario so pode atualizar suas proprias informacoes. 
+
+        if (updatedOwnUser.length === 0) {
             return res.status(400).json('O usuario não foi atualizado');
         }
 
@@ -139,6 +171,7 @@ const showUsers = async (req, res) => {
 module.exports = {
     createUser,
     updateUser,
+    updateOwnUser,
     deleteUser,
     getUserInfos,
     showUsers
