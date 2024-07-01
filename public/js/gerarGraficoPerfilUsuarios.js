@@ -45,21 +45,19 @@ document.addEventListener('DOMContentLoaded', function () {
                 data: {
                     labels: labels,
                     datasets: [{
-                        label: 'Quantidade de Usuários',
+                        label: 'Quantidade de Usuários por Perfil',
                         data: quantities,
                         backgroundColor: [
-                            'rgba(75, 192, 192, 0.2)', // verde claro semitransparente
-                            'rgba(54, 162, 235, 0.2)', // azul claro semitransparente
-                            'rgba(255, 206, 86, 0.2)', // amarelo claro semitransparente
-                            'rgba(153, 102, 255, 0.2)', // roxo claro semitransparente
-                            'rgba(255, 99, 132, 0.2)'  // vermelho claro semitransparente
+                            'rgba(0, 128, 0, 0.5)',  // verde claro semitransparente
+                            'rgba(54, 162, 235, 0.5)', // azul claro semitransparente
+                            'rgba(255, 206, 86, 0.5)', // amarelo claro semitransparente
+                            'rgba(255, 99, 132, 0.5)', // rosa claro semitransparente
                         ],
                         borderColor: [
-                            'rgba(75, 192, 192, 1)', // verde claro sólido
-                            'rgba(54, 162, 235, 1)', // azul claro sólido
-                            'rgba(255, 206, 86, 1)', // amarelo claro sólido
-                            'rgba(153, 102, 255, 1)', // roxo claro sólido
-                            'rgba(255, 99, 132, 1)'  // vermelho claro sólido
+                            'rgba(0, 128, 0, 1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 206, 86, 1)',
+                            'rgba(255, 99, 132, 1)'
                         ],
                         borderWidth: 1
                     }]
@@ -79,6 +77,13 @@ document.addEventListener('DOMContentLoaded', function () {
                                     const value = context.raw || 0;
                                     return `${label}: ${value}`;
                                 }
+                            }
+                        },
+                        title: {
+                            display: true,
+                            text: 'Quantidade de Usuários por Perfil',
+                            font: {
+                                size: 16
                             }
                         }
                     }

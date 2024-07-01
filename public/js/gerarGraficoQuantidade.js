@@ -38,7 +38,6 @@ document.addEventListener('DOMContentLoaded', function () {
         if (data) {
             const ctx = document.getElementById('graficoQuantidade').getContext('2d');
             const labels = Object.keys(data);
-
             const quantities = Object.values(data);
 
             new Chart(ctx, {
@@ -46,14 +45,49 @@ document.addEventListener('DOMContentLoaded', function () {
                 data: {
                     labels: labels,
                     datasets: [{
-                        label: 'Quantidade de cada atributo',
+                        label: 'Quantidade',
                         data: quantities,
-                        backgroundColor: 'rgba(75, 192, 75, 0.2)',
-                        borderColor: 'rgba(75, 192, 75, 1)',
+                        backgroundColor: [
+                            'rgba(34,139,34, 0.5)',  // forest green
+                            'rgba(128,0,128, 0.5)', // purple
+                            'rgba(250,128,114, 0.5)', // salmon
+                            'rgba(255,140,0, 0.5)'  // dark orange
+                        ],
+                        borderColor: [
+                            'rgba(34,139,34, 1)',  // forest green
+                            'rgba(128,0,128, 1)', // purple
+                            'rgba(250,128,114, 1)', // salmon
+                            'rgba(255,140,0, 1)'  // dark orange
+                        ],
                         borderWidth: 1
                     }]
                 },
                 options: {
+                    responsive: true,
+                    maintainAspectRatio: false, // Permitir que o gráfico não mantenha a proporção
+                    aspectRatio: 1, // Ajuste a proporção do gráfico (1 significa largura igual a altura)
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function (context) {
+                                    const label = context.label || '';
+                                    const value = context.raw || 0;
+                                    return `${label}: ${value}`;
+                                }
+                            }
+                        },
+                        title: {
+                            display: true,
+                            text: 'Quantidade de cada categoria',
+                            font: {
+                                size: 16
+                            }
+                        }
+                    },
+
                     scales: {
                         y: {
                             beginAtZero: true
@@ -64,7 +98,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
     // Chama a função para criar o gráfico
-    createBarChart()
+    createBarChart();
 
 });
 

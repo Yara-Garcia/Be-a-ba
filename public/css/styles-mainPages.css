@@ -84,6 +84,11 @@ body {
     color: white;
 }
 
+#btn-gerar-relatorio {
+    width: 100%;
+    max-width: 300px;
+}
+
 a svg {
     color: black;
 }
@@ -144,6 +149,10 @@ a svg {
     .form-select,
     .form-control {
         width: 90%;
+    }
+
+    #btn-gerar-relatorio {
+        font-size: 14px;
     }
 
 }
