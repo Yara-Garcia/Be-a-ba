@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         if (decoded && decoded.tipo_usuario) {
             const tipoUsuario = decoded.tipo_usuario;
+            console.log(tipoUsuario)
 
             const btnCriar = document.querySelector('.btn.btn-success');
 
@@ -21,7 +22,7 @@ document.addEventListener('DOMContentLoaded', function () {
             }
 
             // Selecionando os elementos da barra de navegação que devem ser modificados
-            const navItems = document.querySelectorAll('.nav-item-gestao-usuarios, .nav-item-gestao-perfis, .nav-item-gestao-modulos, .nav-item-gestao-transacoes, .nav-item-gestao-funcoes, nav-item-dashboard, .nav-item, .dropdown-item');
+            const navItems = document.querySelectorAll('.nav-item-gestao-usuarios, .nav-item-gestao-perfis, .nav-item-gestao-modulos, .nav-item-gestao-transacoes, .nav-item-gestao-funcoes, .nav-item-dashboard, .nav-item, .dropdown-item');
             const colActions = document.querySelectorAll('.col-actions');
 
 
