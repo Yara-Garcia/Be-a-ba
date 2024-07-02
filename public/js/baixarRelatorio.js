@@ -6,7 +6,6 @@ function abrirModal() {
 
         // Adiciona os checkboxes corretamente ao modal
         modalBody.innerHTML += `
-            <label class="report-label" for="selecionar-relatorios">Selecionar relatório:</label><br>
             <input type="checkbox" class="report-checkbox" value="Usuarios"> Usuários <br>
             <input type="checkbox" class="report-checkbox" value="Perfis"> Perfis <br>
             <input type="checkbox" class="report-checkbox" value="Modulos"> Módulos <br>
