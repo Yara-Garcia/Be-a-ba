@@ -10,7 +10,6 @@ body {
     color: #ffffff;
 }
 
-
 .container-fluid {
     padding: 20px;
     width: 100%;
@@ -28,11 +27,10 @@ body {
     /* Centraliza horizontalmente */
 }
 
-
 /* Estilo para os inputs */
 .form-control,
 .form-select {
-    width: 50%;
+    width: 80%;
     margin-bottom: 10px;
     /* Define a margem inferior para separar os inputs */
     padding: 8px;
@@ -41,28 +39,45 @@ body {
     /* Garante que o preenchimento e a borda não aumentem o tamanho total do input */
 }
 
-/* Estilo para as labels */
-.form-label {
+.form-modulo .form-control,
+.form-funcao .form-control {
+    width: 50%;
+    margin-bottom: 10px;
+    padding: 8px;
+    box-sizing: border-box;
+}
+
+.form-transacao .form-control {
+    width: 50%;
+    margin-bottom: 10px;
+    padding: 8px;
+    box-sizing: border-box;
+    margin-left: 0.9%;
+}
+
+.form-transacao .dropdown-btn {
+    width: 64%;
+    margin-bottom: -2px;
+    margin-left: 0%;
+    padding: 8px;
+    box-sizing: border-box;
+}
+
+/* Estilo para as labels*/
+.form-transacao .form-label {
     margin-bottom: 5px;
     /* Define a margem inferior para separar as labels dos inputs */
+    margin-left: 1.4%;
+}
+
+.form-label {
+    margin-bottom: 5px;
 }
 
 /* Estilo para os botões */
-.btn {
+.d-flex button {
     margin-right: 10px;
-    /* Define a margem direita para separar os botões */
-}
-
-
-#titulo {
-    font-size: 28px;
-    margin-top: 20px;
-    margin-bottom: 5px;
-}
-
-
-.d-grid.gap-2.d-md-flex.justify-content-md-end button {
-    width: auto;
+    /* Espaçamento entre os botões */
 }
 
 button {
@@ -91,6 +106,11 @@ button.btn-success:hover {
     background-color: #119c62;
 }
 
+#titulo {
+    font-size: 28px;
+    margin-top: 20px;
+    margin-bottom: 5px;
+}
 
 @media (min-width: 1024px) {
     .main-content {
@@ -107,6 +127,20 @@ button.btn-success:hover {
     .form-control {
         width: 80%;
     }
+
+    .form-modulo .form-control {
+        width: 60%;
+    }
+
+    button {
+        padding: 10px 15px;
+        font-size: 14px;
+    }
+
+    button.btn-secondary {
+        background-color: #2F373F;
+        color: #ffffff;
+    }
 }
 
 @media (max-width: 767px) {
@@ -115,7 +149,8 @@ button.btn-success:hover {
     }
 
     #titulo {
-        margin-top: 20px;
+        font-size: 24px;
+        margin-top: 40px;
         margin-bottom: 15px;
     }
 
@@ -124,4 +159,12 @@ button.btn-success:hover {
         width: 90%;
     }
 
+    .form-modulo .form-control {
+        width: 90%;
+    }
+
+    button {
+        padding: 10px 15px;
+        font-size: 14px;
+    }
 }
