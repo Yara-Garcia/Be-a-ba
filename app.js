@@ -13,7 +13,7 @@ const { moduleTransactionAssociation, showAssociations, deleteModuleTransactionA
 const { profileFunctionAssociation, deleteProfileFunctionAssociation, getFunctionAssociations } = require('./controllers/perfisFuncoesAssociacao');
 const { profileModuleAssociation, deleteProfileModuleAssociation, getProfileModuleAssociations } = require('./controllers/perfilModulosAssociacao');
 const { resetPassword, resetPasswordRequest } = require('./controllers/redefinirSenha');
-const { usersReportDownload, profilesReportDownload, transactionsReportDownload, modulesReportDownload, functionsReportDownload } = require('./controllers/reports');
+const { usersReportDownload, profilesReportDownload, transactionsReportDownload, modulesReportDownload, functionsReportDownload, profileModulesReportDownload, profileFunctionsReportDownload, modulesTransactionsReportDownload } = require('./controllers/reports');
 const quantitatyData = require('./controllers/graficoQuantidadeController');
 
 const app = express();
@@ -96,4 +96,8 @@ app.post('/profilesReport', profilesReportDownload)
 app.post('/transactionsReport', transactionsReportDownload)
 app.post('/modulesReport', modulesReportDownload)
 app.post('/functionsReport', functionsReportDownload)
+app.post('/profileModuleReport', profileModulesReportDownload)
+app.post('/profileFunctionReport', profileFunctionsReportDownload)
+app.post('/moduleTransactionReport', modulesTransactionsReportDownload)
+
 

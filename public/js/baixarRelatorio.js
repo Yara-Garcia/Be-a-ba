@@ -11,6 +11,9 @@ function abrirModal() {
             <input type="checkbox" class="report-checkbox" value="Modulos"> Módulos <br>
             <input type="checkbox" class="report-checkbox" value="Transacoes"> Transações <br>
             <input type="checkbox" class="report-checkbox" value="Funcoes"> Funções <br>
+             <input type="checkbox" class="report-checkbox" value="Perfil-Modulos"> Perfil - Módulos <br>
+             <input type="checkbox" class="report-checkbox" value="Perfil-Funcoes"> Perfil - Transações - Funções <br>
+             <input type="checkbox" class="report-checkbox" value="Modulos-Transacoes"> Módulos - Transações <br>
         `;
 
         $('#reportModal').modal('show');
@@ -83,6 +86,18 @@ document.getElementById('btn-download-modal').addEventListener('click', function
         }
         if (selectedReports.includes('Funcoes')) {
             downloadReport('http://localhost:3000/functionsReport', 'relatorio_funcoes.xlsx');
+        }
+
+        if (selectedReports.includes('Perfil-Modulos')) {
+            downloadReport('http://localhost:3000/profileModuleReport', 'relatorio_perfilModulos.xlsx');
+        }
+
+        if (selectedReports.includes('Perfil-Funcoes')) {
+            downloadReport('http://localhost:3000/profileFunctionReport', 'relatorio_perfilTransacoesFuncoes.xlsx');
+        }
+
+        if (selectedReports.includes('Modulos-Transacoes')) {
+            downloadReport('http://localhost:3000/moduleTransactionReport', 'relatorio_modulosTransacoes.xlsx');
         }
 
     } else {
