@@ -63,8 +63,6 @@ document.getElementById('btn-download-modal').addEventListener('click', function
                     a.click();
                     a.remove();
                     window.URL.revokeObjectURL(url);
-
-                    alert('Download feito com sucesso.');
                 })
                 .catch(error => {
                     console.error('Erro ao gerar o relatório:', error);
