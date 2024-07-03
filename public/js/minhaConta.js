@@ -1,6 +1,6 @@
-const token = localStorage.getItem('token');
+let token1 = localStorage.getItem('token');
 
-const decoded = parseJwt(token);
+const decoded = parseJwt(token1);
 
 if (decoded && decoded.id_usuario) {
     const userId = decoded.id_usuario;
@@ -10,7 +10,7 @@ if (decoded && decoded.id_usuario) {
         fetch(`http://localhost:3000/user/${userId}`, {
             method: 'GET',
             headers: {
-                'Authorization': 'Bearer ' + token
+                'Authorization': 'Bearer ' + token1
             }
         })
             .then(response => {
@@ -58,7 +58,7 @@ document.getElementById('form-container').addEventListener('submit', function (e
     fetch(`http://localhost:3000/user`, {
         method: 'PUT',
         headers: {
-            'Authorization': 'Bearer ' + token,
+            'Authorization': 'Bearer ' + token1,
             'Content-Type': 'application/json'
         },
         body: JSON.stringify(dadosUsuario)
@@ -84,9 +84,9 @@ document.getElementById('form-container').addEventListener('submit', function (e
         });
 });
 
-function parseJwt(token) {
+function parseJwt(token1) {
     try {
-        const base64Url = token.split('.')[1];
+        const base64Url = token1.split('.')[1];
         const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
         const jsonPayload = decodeURIComponent(atob(base64).split('').map(function (c) {
             return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
@@ -94,7 +94,7 @@ function parseJwt(token) {
 
         return JSON.parse(jsonPayload);
     } catch (error) {
-        console.error('Erro ao decodificar o token:', error);
+        console.error('Erro ao decodificar o token1:', error);
         return null;
     }
 }

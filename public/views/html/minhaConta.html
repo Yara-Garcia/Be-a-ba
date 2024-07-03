@@ -66,7 +66,8 @@
                                 </svg>
                             </a>
                             <ul class="dropdown-menu dropdown-menu-light text-small shadow">
-                                <li><a class="dropdown-item" href="minhaConta.html">Minha Conta</a></li>
+                                <li><a class="dropdown-item" href="minhaConta.html">Minha Conta</a>
+                                </li>
                                 <li><a class="dropdown-item" href="../html/login.html">Sair</a></li>
                             </ul>
                         </li>
@@ -100,21 +101,41 @@
                     <div class="d-grid gap-2 d-md-flex justify-content-md-end">
                         <button type="button" id="btn-cancelar" class="btn btn-secondary">Cancelar</button>
                         <button type="submit" id="btn-salvar" class="btn btn-success">Salvar</button>
+                        <button type="button" id="btn-visualizar" class="btn btn-secondary">Minhas Permissões</button>
                     </div>
                 </form>
             </div>
         </main>
     </div>
     </div>
-
+    <div class="modal fade" id="permissoesModal" tabindex="-1" aria-labelledby="permissoesModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="permissoesModalLabel">Minhas permissões</h5>
+                    <button type="button" class="btn-close" id="btn-fechar-modal" data-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="btn-fechar-footer" class="btn btn-secondary"
+                        data-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
         integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
         crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
         integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
         crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="../../js/menuScript.js"></script>
-    <script src="../../js/editarOProprioUsuario.js"></script>
+    <script src="../../js/minhaConta.js"></script>
+    <script src="../../js/relatorioPorUsuario.js"></script>
 </body>
 
 </html>

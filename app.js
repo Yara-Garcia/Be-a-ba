@@ -15,6 +15,7 @@ const { profileModuleAssociation, deleteProfileModuleAssociation, getProfileModu
 const { resetPassword, resetPasswordRequest } = require('./controllers/redefinirSenha');
 const { usersReportDownload, profilesReportDownload, transactionsReportDownload, modulesReportDownload, functionsReportDownload, profileModulesReportDownload, profileFunctionsReportDownload, modulesTransactionsReportDownload } = require('./controllers/reports');
 const quantitatyData = require('./controllers/graficoQuantidadeController');
+const { perfilFuncaoRelatorioComNomes, perfilModuloRelatorioComNomes } = require('./controllers/reportsComNomes');
 
 const app = express();
 const PORT = 3000;
@@ -100,4 +101,6 @@ app.post('/profileModuleReport', profileModulesReportDownload)
 app.post('/profileFunctionReport', profileFunctionsReportDownload)
 app.post('/moduleTransactionReport', modulesTransactionsReportDownload)
 
+app.get('/perfilFuncaoNomes', perfilFuncaoRelatorioComNomes)
+app.get('/perfilModuloNomes', perfilModuloRelatorioComNomes)
 
