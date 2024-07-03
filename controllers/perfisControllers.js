@@ -3,8 +3,10 @@ const Modulo = require("../models/modulos");
 const Transacao = require("../models/transacoes");
 const Funcao = require('../models/funcoes');
 const Usuario = require('../models/usuarios');
+const perfilModulo = require('../models/perfilModulo');
 const PerfilFuncao = require('../models/perfilFuncao');
 const { Op } = require('sequelize');
+const PerfilModulo = require("../models/perfilModulo");
 
 
 const createProfile = async (req, res) => {
@@ -81,6 +83,17 @@ const deleteProfile = async (req, res) => {
             return res.status(400).json({ success: false, message: 'Perfil não encontrado para o ID informado!' });
         };
 
+        const associatedToModule = await PerfilModulo.findOne({
+            where: { id_perfil: id_perfil }
+        })
+
+        const associatedToFunction = await PerfilFuncao.findOne({
+            where: { id_perfil: id_perfil }
+        })
+
+        if ((associatedToFunction !== null) || (associatedToModule !== null)) {
+            return res.status(400).json({ success: false, message: 'Não foi possível deletar. Perfil está associado à outros atributos.' });
+        }
         await Perfil.destroy({ where: { id_perfil: id_perfil } });
 
         return res.status(200).json({ success: true, message: 'Perfil excluído com sucesso.' });
