@@ -25,7 +25,7 @@ const usersReportDownload = (req, res) => {
                     console.error(`Erro ao enviar o arquivo: ${err.message}`);
                 }
 
-                // Opcional: deletar o arquivo após o download
+                // deletar o arquivo após o download
                 fs.unlinkSync(reportPath);
             });
         } else {

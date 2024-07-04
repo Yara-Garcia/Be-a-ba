@@ -1,5 +1,5 @@
 import smtplib
-from email.mime.multipart import MIMEMultipart
+from email.mime.multipart import MIMEMultipart #podem conter partes de diferentes tipos de conteúdo
 from email.mime.text import MIMEText
 from dotenv import load_dotenv
 import os
